@@ -1,0 +1,355 @@
+{
+  "title": "Ceyx & Alcyone",
+  "subtitle": "Ein interaktiver Film nach Ovid, Metamorphosen XI",
+  "fps": 24,
+  "style": "cinematic film still, ancient greece, 35mm anamorphic, volumetric fog, teal and amber grade, film grain, photorealistic",
+  "negative": "cartoon, anime, 3d render, painting, text, watermark, logo, modern clothing, deformed hands, extra fingers, blurry, lowres, oversaturated, bad eyes, crossed eyes, asymmetric eyes, lazy eye, dead eyes, blurry face, deformed iris, nude, naked, topless, nipples, cleavage, bare breasts, see-through clothing, lingerie",
+  "characters": {
+    "CEYX": "a bearded greek king (dark curly hair, short dark beard, red cloak)",
+    "ALCYONE": "a young greek queen (long dark wavy hair, simple white linen dress)"
+  },
+  "start": "hafen_1",
+  "scenes": {
+    "hafen_1": {
+      "chapter": "I · Der Abschied",
+      "verse": [
+        "ne me fugiens ventos sequerere rogabam",
+        "Ich bat dich, nicht vor mir fliehend den Winden zu folgen."
+      ],
+      "image": "wide shot of a small ancient greek stone harbour at dawn, an ancient greek galley with one mast, a single square linen sail and a row of oars ready to depart, sailors loading, calm grey sea, soft pink morning mist",
+      "motion": "slow cinematic dolly forward over the harbour, sail gently moving in the wind, sailors walking, gentle waves",
+      "next": "hafen_2"
+    },
+    "hafen_2": {
+      "image": "medium shot on a stone quay at dawn: a young woman with long dark hair in a plain white dress holds the hands of a bearded man wearing a dark red cloak, she looks at him pleading, an ancient greek galley behind them, morning mist",
+      "motion": "she grips his hands tighter and speaks pleadingly, his cloak moving in the wind, slow push in",
+      "next": "hafen_rede"
+    },
+    "hafen_rede": {
+      "image": "close-up portrait facing the camera of a young greek woman with long dark wavy hair in a plain white linen dress, speaking softly and pleading, worried eyes, a bearded man in a dark red cloak blurred in the foreground at the edge of the frame, misty harbour at dawn behind her",
+      "motion": "she looks at him silently with pleading eyes, lips closed, slight head movement, hair moves in the breeze, static camera, face stays stable",
+      "subtitle": "Sie bittet ihn, sie mitzunehmen oder zu bleiben – sie fürchtet die Winde.",
+      "choice": {
+        "prompt": "Was tut Alcyone?",
+        "options": [
+          {
+            "label": "Sie fleht ihn an zu bleiben",
+            "set": {
+              "farewell": "plea"
+            },
+            "goto": "hafen_flehen"
+          },
+          {
+            "label": "Sie lässt ihn mit einem Kuss ziehen",
+            "set": {
+              "farewell": "kiss"
+            },
+            "goto": "hafen_kuss"
+          }
+        ]
+      }
+    },
+    "hafen_flehen": {
+      "image": "close-up portrait of a young greek woman with long dark wavy hair in a plain white dress, tears in her eyes, pleading, her hand clutching a dark red cloth, harbour in soft focus behind, cold morning light",
+      "motion": "she clutches the red cloak and shakes her head slowly, tears running, subtle handheld camera",
+      "next": "hafen_schwur"
+    },
+    "hafen_schwur": {
+      "image": "close-up portrait facing the camera of a bearded greek king in his thirties with dark curly hair and a dark red wool cloak, speaking earnestly and gently, determined eyes, misty harbour at dawn behind him",
+      "motion": "he looks at her silently with a calm determined expression, lips closed, slight nod, cloak moves in the wind, static camera, face stays stable",
+      "subtitle": "Er schwört beim Feuer seines Vaters: Bevor der Mond zweimal voll ist, kehrt er zurück.",
+      "next": "hafen_abfahrt"
+    },
+    "hafen_kuss": {
+      "image": "close-up of a farewell kiss on a quay: a bearded man in a dark red cloak kisses the forehead of a young woman with long dark hair in a plain white dress, warm first sunlight through mist",
+      "motion": "a gentle farewell kiss, foreheads touching, sunlight flickering through mist, slow orbit around them",
+      "subtitle": "hoc mihi discedens dedit oscula litore – An diesem Ufer küsste er sie zum Abschied.",
+      "next": "hafen_abfahrt"
+    },
+    "hafen_abfahrt": {
+      "image": "wide shot from behind ALCYONE standing alone at the end of a stone quay, watching an ancient greek galley with one square sail and oars leave the harbour into the misty sea",
+      "motion": "the ship sails slowly away into the mist, her dress and hair move in the wind, static camera",
+      "subtitle": "hic retinacula solvit – Hier löste er die Taue.",
+      "next": "sturm_1"
+    },
+    "sturm_1": {
+      "chapter": "II · Der Sturm",
+      "verse": [
+        "fluctibus erigitur caelumque aequare videtur",
+        "Die Flut türmt sich und scheint den Himmel zu erreichen."
+      ],
+      "image": "dramatic low angle shot from the water surface of an ancient greek trireme with a single short mast and a ripped square sail, tossed on towering storm waves at night, the bow lifting out of a massive wave, white foam and spray everywhere, torrential rain, lightning bolt behind, dark stormy sky",
+      "motion": "the galley rises over a large wave and slams down into the trough, sea spray bursts over the bow, the torn sail flaps violently, rain streaks sideways, lightning flashes once, realistic heavy water physics, handheld camera slightly shaking",
+      "next": "sturm_2",
+      "negative": "galleon, three masts, two masts, multiple masts, pirate ship, caravel, calm sea, flat water, lights on ship, lanterns"
+    },
+    "sturm_2": {
+      "image": "dramatic low angle shot from the water surface at night, an ancient greek trireme with a single short mast and a ripped square sail heeling far over, a huge breaking wave of black water collapsing over its deck, white foam pouring across the hull, torrential rain, lightning",
+      "motion": "the breaking wave collapses over the deck, the hull rolls onto its side and is pulled under the water, the mast goes down with it, only churning foam and broken planks are left on the heaving sea, rain keeps falling, handheld camera, realistic heavy water physics, no cut",
+      "next": "sturm_3",
+      "negative": "galleon, three masts, two masts, multiple masts, pirate ship, viking ship, dragon head, curled prow, caravel, calm sea, flat water, lights on ship, lanterns, toy boat, miniature, cotton, smoke, cliffs, coast, land, rocks, island, mountains",
+      "end_image": "empty stormy black sea at night, huge churning waves and white foam, broken wooden planks drifting, torrential rain, lightning"
+    },
+    "sturm_3": {
+      "image": "close-up of a drowning man in the black sea at night, only his head and shoulders above the water, CEYX, both arms wrapped around a floating broken wooden plank, soaked hair, rain, lightning",
+      "motion": "he clings to the plank as waves lift and drop him, rain pouring, lightning flashes on his face",
+      "subtitle": "Er hält mit der Hand, die das Zepter trug, ein Stück vom Wrack.",
+      "choice": {
+        "prompt": "Was tut Ceyx?",
+        "options": [
+          {
+            "label": "Alcyones Namen rufen",
+            "set": {
+              "storm": "name"
+            },
+            "goto": "sturm_ruf"
+          },
+          {
+            "label": "Zum verhüllten Morgenstern aufblicken",
+            "set": {
+              "storm": "star"
+            },
+            "goto": "sturm_stern"
+          }
+        ]
+      }
+    },
+    "sturm_ruf": {
+      "image": "close-up of CEYX in the black storm sea shouting a name, water in his beard, desperate eyes, rain",
+      "motion": "he lifts his head above the water and calls out, rain falling, water around him moves, subtle camera sway, face stays stable",
+      "subtitle": "nominat Alcyonen ipsisque inmurmurat undis – Er nennt Alkyones Namen und murmelt ihn in die Wellen.",
+      "next": "sturm_welle"
+    },
+    "sturm_stern": {
+      "image": "low angle view from the stormy sea up to a dark cloud-covered night sky, a single bright morning star disappearing behind black clouds",
+      "motion": "black storm clouds slowly swallow the bright star, lightning inside the clouds",
+      "subtitle": "Lucifer obscurus – Der Morgenstern, sein Vater, verhüllt sein Gesicht.",
+      "next": "sturm_welle"
+    },
+    "sturm_welle": {
+      "image": "close shot of a drowning bearded man in a soaked red cloak in the black storm sea at night, head and shoulders above the choppy water, arms gripping a broken wooden plank, rain, lightning",
+      "motion": "he struggles in the water, arms pulling at the plank, head lifting to breathe, waves lift and drop him, then a dark wall of water rises behind him and collapses over him, he disappears under the churning white foam, handheld camera, realistic heavy water physics",
+      "subtitle": "Ein schwarzer Bogen aus Wasser bricht über ihm zusammen.",
+      "next": "warten_1",
+      "end_image": "a wall of black storm water and churning white foam filling the frame at night, no person"
+    },
+    "warten_1": {
+      "chapter": "III · Das Warten",
+      "verse": [
+        "dinumerat noctes",
+        "Sie zählt die Nächte."
+      ],
+      "image": "ALCYONE sitting at a window of a bronze age palace room at dusk looking out at a calm grey sea, oil lamps, warm and cold light mixing",
+      "motion": "she gazes at the sea, lamp flames flicker, curtains move slightly, slow push in",
+      "choice": {
+        "prompt": "Wie verbringt Alcyone die Nächte?",
+        "options": [
+          {
+            "label": "Sie betet im Tempel der Juno",
+            "set": {
+              "waiting": "pray"
+            },
+            "goto": "warten_gebet"
+          },
+          {
+            "label": "Sie webt ein Gewand für seine Rückkehr",
+            "set": {
+              "waiting": "weave"
+            },
+            "goto": "warten_weben"
+          }
+        ]
+      }
+    },
+    "warten_gebet": {
+      "image": "ALCYONE kneeling before a stone altar in a dim ancient temple of Juno, incense smoke rising in a shaft of light",
+      "motion": "incense smoke curls up through the light beam, she lifts her hands in prayer",
+      "subtitle": "Sie betet für einen, der nicht mehr lebt.",
+      "next": "traum_1"
+    },
+    "warten_weben": {
+      "image": "ALCYONE weaving a deep red cloth at a wooden bronze age loom by lamplight at night",
+      "motion": "her hands pass the shuttle through the threads, lamp light flickers",
+      "subtitle": "Sie webt Kleider, die er tragen soll, wenn er heimkehrt.",
+      "next": "traum_1"
+    },
+    "traum_1": {
+      "chapter": "IV · Der Traum",
+      "verse": [
+        "agnoscis Ceyca, miserrima coniunx?",
+        "Erkennst du Ceyx, du ärmste Gemahlin?"
+      ],
+      "image": "a young woman with long dark hair asleep in a bed, dressed in a long-sleeved high-necked white linen nightgown, blanket up to her shoulders, dark ancient stone bedroom in blue moonlight; standing beside the bed a pale translucent glowing ghost of a bearded man with wet dark curly hair and a short beard, bare shoulders, water dripping, sorrowful face turned toward her",
+      "motion": "the pale translucent bearded ghost slowly leans over the sleeping woman, water drips from his hair and beard, blue mist drifts through the room, she stirs slightly in her sleep, static camera",
+      "subtitle": "Im Traum steht Ceyx vor ihr, bleich und triefend: Er sei tot, der Südwind habe sein Schiff zerschlagen.",
+      "choice": {
+        "prompt": "Was tut Alcyone im Traum?",
+        "options": [
+          {
+            "label": "Nach ihm greifen",
+            "set": {
+              "dream": "reach"
+            },
+            "goto": "traum_greifen"
+          },
+          {
+            "label": "Ihn fragen, ob er es wirklich ist",
+            "set": {
+              "dream": "ask"
+            },
+            "goto": "traum_fragen"
+          }
+        ]
+      },
+      "fx": "dream",
+      "negative": "veil, hood, shroud, female ghost, sheet ghost, faceless"
+    },
+    "traum_greifen": {
+      "image": "a young woman with long dark hair in a long-sleeved high-necked white linen nightgown sits up in bed reaching both arms toward a ghostly figure dissolving into blue mist, dark ancient stone bedroom",
+      "motion": "she slowly stretches both arms toward the translucent glowing figure in the doorway, the figure gently dissolves into drifting blue mist, her hands close on empty air, subtle realistic motion, static camera",
+      "subtitle": "Sie greift nach ihm – und umarmt nur Luft.",
+      "next": "traum_erwachen",
+      "fx": "dream"
+    },
+    "traum_fragen": {
+      "image": "close-up of the pale translucent face of a bearded man glowing faintly blue in a dark room, wet dark curly hair, sad eyes, a single tear, no hood, bare shoulders, blue moonlight",
+      "motion": "a single tear slowly runs down his pale face, he looks at the camera, blue mist drifts slowly, almost still",
+      "subtitle": "Kein Bote sei er – er selbst verkünde ihr sein Schicksal. Sie solle um ihn weinen.",
+      "next": "traum_erwachen",
+      "fx": "dream"
+    },
+    "traum_erwachen": {
+      "image": "a young woman with long dark curly hair in a long-sleeved high-necked white linen nightgown sitting alone on a bed crying in grief, ancient stone bedroom lit by small clay oil lamps",
+      "motion": "she weeps and slowly covers her face with both hands, the small oil lamp flames flicker, warm light moves on the stone wall, still camera, no other people",
+      "subtitle": "nulla est Alcyone, nulla est – Nun ist es aus mit ihr, klagt Alkyone.",
+      "next": "ufer_1"
+    },
+    "ufer_1": {
+      "chapter": "V · Der Morgen",
+      "verse": [
+        "Mane erat.",
+        "Es war Morgen."
+      ],
+      "image": "ALCYONE walking alone along an empty beach at sunrise, golden mist, stone harbour mole in the distance, gentle waves",
+      "motion": "she walks slowly along the waterline, waves wash over the sand, golden mist drifting",
+      "next_if": [
+        {
+          "flag": "farewell",
+          "is": "kiss",
+          "goto": "ufer_erinnerung_kuss"
+        },
+        {
+          "goto": "ufer_erinnerung_flehen"
+        }
+      ]
+    },
+    "ufer_erinnerung_kuss": {
+      "image": "ALCYONE standing on the beach at sunrise, a faint transparent golden ghostly memory of CEYX kissing her forehead beside her",
+      "motion": "the transparent memory of the kiss glows and fades away into the sunlight",
+      "subtitle": "Hier, erinnert sie sich, küsste er sie zum Abschied.",
+      "next": "ufer_koerper",
+      "fx": "memory"
+    },
+    "ufer_erinnerung_flehen": {
+      "image": "a young woman with long dark hair in a white dress stands on a beach at sunrise, beside her a faint transparent golden glowing memory of the same woman holding the hands of a bearded man in a dark red cloak",
+      "motion": "the transparent golden memory figures softly glow and slowly fade into the sunlight, gentle waves, almost still camera",
+      "subtitle": "Hier, erinnert sie sich, bat sie ihn zu bleiben.",
+      "next": "ufer_koerper",
+      "fx": "memory"
+    },
+    "ufer_koerper": {
+      "image": "seen from behind, a young woman with long dark hair in a white dress stands on the beach at sunrise, far out on the calm sea a small dark shape with a patch of red cloth floats on the water, wide shot",
+      "motion": "the small dark floating shape slowly drifts closer on the gentle waves, her hair moves in the breeze, still camera",
+      "next": "ufer_nah"
+    },
+    "ufer_nah": {
+      "image": "close low shot at the waterline of a calm beach at sunrise, a soaked dark red wool cloak floating in the gentle surf, a man lying face down wrapped in it, only his dark curly hair and one limp hand visible, golden morning light, foam around, shallow depth of field",
+      "motion": "gentle waves wash the floating red cloak slowly toward the sand, foam swirls around it, the golden light shimmers, very slow push in, still and mournful",
+      "negative": "blood, gore, wounds, face visible",
+      "subtitle": "ille est! – Da erkennt sie ihn: Er ist es.",
+      "choice": {
+        "prompt": "Was tut Alcyone?",
+        "options": [
+          {
+            "label": "Auf die Mole laufen, ihm entgegen",
+            "set": {
+              "end": "mole"
+            },
+            "goto": "mole_1"
+          },
+          {
+            "label": "Am Ufer niedersinken",
+            "set": {
+              "end": "shore"
+            },
+            "goto": "ende_ufer_1"
+          }
+        ]
+      }
+    },
+    "mole_1": {
+      "chapter": "VI · Die Verwandlung",
+      "verse": [
+        "tunc quoque mansit amor",
+        "Auch dann noch blieb die Liebe."
+      ],
+      "image": "ALCYONE running along a massive ancient stone mole into the sea, dress flowing, morning sun",
+      "motion": "she runs along the stone mole, dress and hair flowing, camera tracking alongside",
+      "next": "mole_sprung"
+    },
+    "mole_sprung": {
+      "image": "a young woman with long dark hair in a plain white linen dress leaping from the end of an ancient stone breakwater high over the calm sea, arms spread wide like wings, dress and hair flowing, backlit by the golden morning sun, side view",
+      "motion": "she leaps with arms spread, in mid-air her white dress dissolves into drifting white feathers and her body shrinks and transforms into a small blue kingfisher that flies away over the sea, magical but realistic, soft golden light, smooth continuous transformation",
+      "next": "mole_flug",
+      "end_image": "a common kingfisher bird with bright blue back and orange belly flying high over the calm sea next to an ancient stone breakwater, wings spread wide, golden morning sun backlight, a few white feathers drifting in the air, side view",
+      "negative": "angel wings, human with wings, cartoon, fairy"
+    },
+    "mole_flug": {
+      "image": "a single small common kingfisher bird with bright blue back and orange belly flying low over calm sea water at sunrise, wings spread, close tracking shot",
+      "motion": "the kingfisher flies low over the water, wing tips skimming the surface, tracking shot",
+      "subtitle": "stringebat summas undas – Sie streifte die Oberfläche der Wellen.",
+      "next": "mole_zwei"
+    },
+    "mole_zwei": {
+      "image": "two blue kingfisher birds rising together from the calm sea into a golden sky",
+      "motion": "a second kingfisher rises from the water and both birds fly upward together, circling",
+      "subtitle": "Die Götter erbarmten sich: Auch Ceyx wurde ein Vogel.",
+      "next_if": [
+        {
+          "flag": "waiting",
+          "is": "weave",
+          "goto": "finale_nest_rot"
+        },
+        {
+          "goto": "finale_nest"
+        }
+      ]
+    },
+    "finale_nest": {
+      "image": "close shot of a single small bird nest made of twigs floating on a perfectly calm glassy winter sea, two common kingfishers with bright blue backs and orange bellies sitting side by side in the nest, low golden winter sun, soft mist, reflections on the water",
+      "motion": "the glassy sea barely moves, the two kingfishers nestle closer together and preen each other gently, soft golden light shimmers on the water, very slow push in",
+      "subtitle": "Sieben stille Tage im Winter hält Aiolos die Winde zurück.",
+      "end": "ovid",
+      "negative": "two nests, large nest, crows, sparrows"
+    },
+    "finale_nest_rot": {
+      "image": "a floating bird nest woven with a thread of deep red cloth on a perfectly calm glassy winter sea, two kingfishers sitting together, low golden winter sun",
+      "motion": "the glassy sea barely moves, the two birds nestle together, very slow push in",
+      "subtitle": "Sieben stille Tage im Winter hält Aiolos die Winde zurück.",
+      "end": "ovid"
+    },
+    "ende_ufer_1": {
+      "chapter": "VI · Das Ufer",
+      "image": "a young woman with long dark curly hair in a white dress kneeling alone at the waterline on wet sand, pressing a torn wet dark red cloak against her chest, grey misty morning",
+      "motion": "gentle waves wash around her knees, she slowly bows her head over the red cloak, still camera",
+      "subtitle": "nomen nomine tangam – Wenigstens Name an Name will sie ihn berühren.",
+      "next": "ende_ufer_2"
+    },
+    "ende_ufer_2": {
+      "image": "a simple ancient stone grave marker on a cliff above a calm sea at sunset, two kingfisher birds flying past",
+      "motion": "two kingfishers fly past the grave marker and out over the sea",
+      "subtitle": "Ovid erzählt es anders – doch auch hier blieb die Liebe.",
+      "end": "shore"
+    }
+  }
+}

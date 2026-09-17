@@ -1,0 +1,10 @@
+# Nur das, was die fertige Seite braucht, kommt ins Repository.
+stills/
+clips_lowres/
+backup_5b/
+rejected/
+lipsync/
+voice/
+node_modules/
+artifact_page.html
+redo_voice.json

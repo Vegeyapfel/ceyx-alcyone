@@ -1,0 +1,28 @@
+= clip hafen_1 (vorhanden)
++ clip hafen_2  343 s
++ clip hafen_flehen  305 s
++ clip hafen_kuss  326 s
++ clip hafen_abfahrt  298 s
++ clip sturm_3  353 s
++ clip sturm_ruf  349 s
++ clip sturm_stern  348 s
++ clip sturm_welle  338 s
++ clip warten_1  357 s
+= clip warten_gebet (vorhanden)
+= clip warten_weben (vorhanden)
+= clip traum_1 (vorhanden)
+= clip traum_fragen (vorhanden)
+= clip traum_erwachen (vorhanden)
+= clip ufer_1 (vorhanden)
+= clip ufer_erinnerung_kuss (vorhanden)
+= clip ufer_erinnerung_flehen (vorhanden)
++ clip ufer_koerper  376 s
++ clip mole_1  412 s
+= clip mole_sprung (vorhanden)
+= clip mole_flug (vorhanden)
+= clip mole_zwei (vorhanden)
++ clip finale_nest  409 s
+= clip finale_nest_rot (vorhanden)
+= clip ende_ufer_1 (vorhanden)
+= clip ende_ufer_2 (vorhanden)
+fertig

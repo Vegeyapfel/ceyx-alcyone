@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ceyx & Alcyone – Ein interaktiver Film</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="player.css">
+</head>
+<body>
+  <div id="stage">
+    <div class="layer" id="layerA"><video playsinline muted preload="auto"></video><div class="still"></div></div>
+    <div class="layer" id="layerB"><video playsinline muted preload="auto"></video><div class="still"></div></div>
+    <div id="letterbox"></div>
+    <div id="grain"></div>
+
+    <div id="chapter" class="hidden">
+      <div class="mark"></div>
+      <div class="latin"></div>
+      <div class="german"></div>
+    </div>
+
+    <div id="subtitle" class="hidden"></div>
+
+    <div id="choice" class="hidden">
+      <div class="question"></div>
+      <div class="options"></div>
+    </div>
+
+    <div id="title">
+      <h1>Ceyx <span>&amp;</span> Alcyone</h1>
+      <p class="sub">Ein interaktiver Film nach Ovid, Metamorphosen XI</p>
+      <p class="hint">Deine Entscheidungen verändern den Film · Kopfhörer empfohlen</p>
+      <button id="start">Beginnen</button>
+    </div>
+
+    <div id="end" class="hidden">
+      <div class="endtitle"></div>
+      <div class="path"></div>
+      <button id="again">Noch einmal – anders entscheiden</button>
+    </div>
+  </div>
+  <script type="module" src="player.js"></script>
+</body>
+</html>
