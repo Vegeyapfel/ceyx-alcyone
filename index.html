@@ -9,6 +9,52 @@
 <link rel="stylesheet" href="player.css">
 </head>
 <body>
+<style>
+  /* Kennwortschleier: hält Zufallsbesucher ab, ersetzt keine echte Zugangssperre. */
+  #gate { position: fixed; inset: 0; z-index: 99; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 18px; background: #07090b; color: #e8e2d4;
+    font-family: 'Cormorant Garamond', Georgia, serif; text-align: center; }
+  #gate h2 { font-size: clamp(28px, 5vw, 46px); font-weight: 400; letter-spacing: .08em; margin: 0; }
+  #gate p { opacity: .6; margin: 0; font-size: 16px; letter-spacing: .04em; }
+  #gate form { display: flex; gap: 10px; }
+  #gate input { width: 190px; padding: 12px 14px; background: transparent; border: 1px solid #6b6455;
+    color: #e8e2d4; font-family: inherit; font-size: 22px; letter-spacing: .5em; text-align: center; border-radius: 2px; }
+  #gate input:focus { outline: none; border-color: #c8b78a; }
+  #gate button { padding: 12px 22px; background: transparent; border: 1px solid #6b6455; color: #e8e2d4;
+    font-family: inherit; font-size: 18px; letter-spacing: .12em; cursor: pointer; border-radius: 2px; }
+  #gate button:hover { border-color: #c8b78a; color: #fff; }
+  #gate .err { color: #c96b5b; min-height: 20px; font-size: 15px; }
+</style>
+
+<div id="gate">
+  <h2>Ceyx &amp; Alcyone</h2>
+  <p>Zugang nur mit Kennwort</p>
+  <form id="gateform">
+    <input id="gatepw" type="password" inputmode="numeric" maxlength="6" autocomplete="off" aria-label="Kennwort">
+    <button type="submit">Öffnen</button>
+  </form>
+  <div class="err" id="gateerr"></div>
+</div>
+<script>
+  (function () {
+    const PW = '559748';
+    const gate = document.getElementById('gate');
+    try { if (localStorage.getItem('ceyx_ok') === '1') { gate.remove(); return; } } catch (e) {}
+    const pw = document.getElementById('gatepw');
+    document.getElementById('gateform').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (pw.value.trim() === PW) {
+        try { localStorage.setItem('ceyx_ok', '1'); } catch (e) {}
+        gate.remove();
+      } else {
+        document.getElementById('gateerr').textContent = 'Falsches Kennwort';
+        pw.value = '';
+      }
+    });
+    pw.focus();
+  })();
+</script>
+
   <div id="stage">
     <div class="layer" id="layerA"><video playsinline muted preload="auto"></video><div class="still"></div></div>
     <div class="layer" id="layerB"><video playsinline muted preload="auto"></video><div class="still"></div></div>
