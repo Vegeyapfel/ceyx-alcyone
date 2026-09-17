@@ -223,8 +223,16 @@ for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) {
   });
 }
 
+/** Chrome lehnt die erste Anfrage gelegentlich ab; dann beim nächsten Tippen erneut. */
+function retryFullscreenOnTap() {
+  if (document.fullscreenElement || document.webkitFullscreenElement) return;
+  const once = () => { goFullscreen(); window.removeEventListener('pointerdown', once); };
+  window.addEventListener('pointerdown', once, { once: true });
+}
+
 $('#start').onclick = async () => {
   await goFullscreen();
+  retryFullscreenOnTap();
   await startAudio();
   $('#title').classList.add('hidden');
   playScene(story.start);

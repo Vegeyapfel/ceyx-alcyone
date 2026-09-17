@@ -102,3 +102,10 @@ html, body { height: 100dvh; }
   font-size: 18px; line-height: 1; opacity: .25; backdrop-filter: none; }
 #fs:hover, #fs:focus-visible { opacity: 1; transform: none; }
 @media (pointer: coarse) { #fs { opacity: .5; font-size: 22px; } }
+
+/* Auf dem Handy quer soll das Bild randlos laufen wie bei einem Streamingdienst:
+   keine Kinobalken, kein Filmkorn über dem ohnehin kleinen Bild. */
+@media (orientation: landscape) and (pointer: coarse) {
+  #letterbox { display: none; }
+  #grain { opacity: .04; }
+}
