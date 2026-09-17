@@ -191,7 +191,40 @@ function finish(kind) {
   $('#end').classList.remove('hidden');
 }
 
+/**
+ * Vollbild und Querformat. Beides darf nur aus einer Nutzergeste heraus
+ * angefordert werden, deshalb hängt es am Startknopf. Auf iPhones lehnt Safari
+ * den Vollbildmodus für die Seite ab; dort greift der Hinweis „Gerät drehen".
+ */
+async function goFullscreen() {
+  const el = document.documentElement;
+  try { await (el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.()); } catch { /* abgelehnt */ }
+  try { await screen.orientation?.lock?.('landscape'); } catch { /* nicht unterstützt */ }
+}
+
+async function toggleFullscreen() {
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    try { await (document.exitFullscreen?.() ?? document.webkitExitFullscreen?.()); } catch { /* egal */ }
+  } else {
+    await goFullscreen();
+  }
+}
+
+// Taste F schaltet um (F11 fängt der Browser selbst ab), Knopf oben rechts ebenso.
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+});
+$('#fs').onclick = toggleFullscreen;
+for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) {
+  document.addEventListener(ev, () => {
+    const on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    $('#fs').textContent = on ? '⛶' : '⛶';
+    $('#fs').title = on ? 'Vollbild verlassen (F)' : 'Vollbild (F)';
+  });
+}
+
 $('#start').onclick = async () => {
+  await goFullscreen();
   await startAudio();
   $('#title').classList.add('hidden');
   playScene(story.start);

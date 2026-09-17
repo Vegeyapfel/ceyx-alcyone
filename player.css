@@ -70,3 +70,35 @@ button .key { color: #d9b877; margin-right: .6em; font-size: .8em; }
 .layer[data-fx="dream"]::after { content: ''; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(30,60,120,.45) 100%);
   backdrop-filter: blur(0px); animation: memory 6s ease-in-out infinite alternate; }
+
+/* ---------------------------------------------------------------- Handy */
+/* dvh statt vh: die Adressleiste mobiler Browser schiebt sonst den Rand weg. */
+html, body { height: 100dvh; }
+#stage { height: 100dvh; }
+
+/* Hochkant auf dem Handy: bitten, das Gerät zu drehen. */
+#rotate { position: fixed; inset: 0; z-index: 50; display: none; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2.5vh; padding: 0 12vw; text-align: center;
+  background: #05070a; color: #b9b1a2; font-size: 20px; letter-spacing: .04em; }
+#rotate .icon { font-size: 54px; color: #d9b877; animation: tilt 2.4s ease-in-out infinite; }
+@keyframes tilt { 0%, 60%, 100% { transform: rotate(0deg); } 80% { transform: rotate(90deg); } }
+
+@media (orientation: portrait) and (pointer: coarse) {
+  #rotate { display: flex; }
+}
+
+/* Quer auf kleinen Geräten: schmalere Balken, tiefere Untertitel, kompaktere Knöpfe. */
+@media (orientation: landscape) and (max-height: 500px) {
+  #letterbox { box-shadow: inset 0 4vh 0 #000, inset 0 -4vh 0 #000; }
+  #subtitle { bottom: 6.5vh; width: 88vw; font-size: 17px; }
+  #choice { padding-bottom: 8vh; }
+  #choice .question { font-size: 18px; margin-bottom: 1.6vh; }
+  button { font-size: 15px; padding: 1.4vh 3vw; }
+  #title .hint { margin: 3vh 0 2vh; }
+}
+
+/* Vollbildknopf: unauffällig oben rechts, wird beim Zeigen deutlicher. */
+#fs { position: absolute; top: 1.6vh; right: 1.4vw; z-index: 40; padding: .4em .55em;
+  font-size: 18px; line-height: 1; opacity: .25; backdrop-filter: none; }
+#fs:hover, #fs:focus-visible { opacity: 1; transform: none; }
+@media (pointer: coarse) { #fs { opacity: .5; font-size: 22px; } }
