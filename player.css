@@ -109,3 +109,8 @@ html, body { height: 100dvh; }
   #letterbox { display: none; }
   #grain { opacity: .04; }
 }
+
+#toast { position: fixed; left: 2vw; bottom: 2vh; z-index: 60; max-width: 90vw; padding: .7em 1em;
+  background: rgba(8,10,12,.9); border: 1px solid rgba(217,184,119,.5); color: #e9e2d4;
+  font-size: 15px; line-height: 1.35; opacity: 0; transition: opacity .4s ease; pointer-events: none; }
+#toast.on { opacity: 1; }

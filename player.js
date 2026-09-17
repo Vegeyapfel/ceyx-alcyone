@@ -196,9 +196,25 @@ function finish(kind) {
  * angefordert werden, deshalb hängt es am Startknopf. Auf iPhones lehnt Safari
  * den Vollbildmodus für die Seite ab; dort greift der Hinweis „Gerät drehen".
  */
+/** Kurze Meldung unten links – nur sichtbar, wenn etwas schiefgeht. */
+function toast(text) {
+  let el = $('#toast');
+  if (!el) { el = document.createElement('div'); el.id = 'toast'; document.body.appendChild(el); }
+  el.textContent = text;
+  el.classList.add('on');
+  setTimeout(() => el.classList.remove('on'), 6000);
+}
+
 async function goFullscreen() {
   const el = document.documentElement;
-  try { await (el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.()); } catch { /* abgelehnt */ }
+  if (!document.fullscreenEnabled && !el.webkitRequestFullscreen) {
+    return toast('Vollbild wird von diesem Browser nicht angeboten');
+  }
+  try {
+    await (el.requestFullscreen?.({ navigationUI: 'hide' }) ?? el.webkitRequestFullscreen?.());
+  } catch (e) {
+    toast(`Vollbild abgelehnt: ${e.name} – ${e.message}`);
+  }
   try { await screen.orientation?.lock?.('landscape'); } catch { /* nicht unterstützt */ }
 }
 
