@@ -205,13 +205,13 @@
       "negative": "veil, hood, shroud, female ghost, sheet ghost, faceless"
     },
     "traum_greifen": {
-      "image": "a young woman with long dark hair in a white linen nightgown sits up in bed, seen from behind, facing the pale ghost of a bearded man in a dark red cloak standing in the misty doorway of a dark ancient stone bedroom at night",
-      "motion": "she leans forward and slowly stretches both arms toward the man in the doorway, he dissolves into drifting blue mist, her hands close on empty air and sink down, static camera, calm realistic motion",
-      "subtitle": "Sie greift nach ihm – und umarmt nur Luft.",
+      "image": "close shot from slightly above of ALCYONE lying asleep on her back in bed, her head on a white pillow, tears on her cheeks, eyes closed, her arms resting on the blanket, dark ancient bedroom, cold blue moonlight falling across her face",
+      "motion": "she weeps in her sleep, then slowly lifts both arms upward as if to embrace someone leaning over her, her arms close around empty air and she hugs nothing, her arms sink back onto her chest, her lips tremble, slow natural motion, static camera",
+      "subtitle": "corpusque petens amplexibus auras – Im Schlaf sucht sie seinen Körper und umarmt nur Luft.",
       "next": "traum_erwachen",
       "fx": "dream",
-      "negative": "female ghost, ghost in white dress, veiled figure, hood, shroud, arms spread sideways, t-pose, faceless, second woman",
-      "end_image": "empty misty doorway in a dark ancient stone bedroom at night, drifting blue mist, nobody there"
+      "negative": "man, second person, sitting up, arms spread sideways, t-pose, open eyes, smiling",
+      "goal": "Ovid Met. XI 674-676: Alcyone stöhnt und weint im Schlaf, bewegt die Arme, sucht seinen Körper und umarmt nur Luft. Nahaufnahme nur von ihr; Ceyx ist in traum_1 schon am Bett zu sehen. Sie liegt, sie setzt sich nicht auf, langsame schlafwandlerische Bewegung."
     },
     "traum_fragen": {
       "image": "close-up of the pale translucent face of a bearded man glowing faintly blue in a dark room, wet dark curly hair, sad eyes, a single tear, no hood, bare shoulders, blue moonlight",
