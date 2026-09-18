@@ -205,10 +205,19 @@ function toast(text) {
   setTimeout(() => el.classList.remove('on'), 6000);
 }
 
+// iPhone und iPad: Safari kennt kein Vollbild für Seiten, nur für Videos. Als
+// App auf dem Home-Bildschirm läuft die Seite dagegen ohne Safari-Leisten.
+const IOS = /iP(hone|ad|od)/.test(navigator.platform)
+  || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
+const ALS_APP = matchMedia('(display-mode: fullscreen)').matches
+  || matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
 async function goFullscreen() {
   const el = document.documentElement;
   if (!document.fullscreenEnabled && !el.webkitRequestFullscreen) {
-    return toast('Vollbild wird von diesem Browser nicht angeboten');
+    if (IOS && !ALS_APP) toast('Für Vollbild: unten auf Teilen tippen, dann „Zum Home-Bildschirm“ – von dort startet der Film ohne Safari-Leisten.');
+    else toast('Vollbild wird von diesem Browser nicht angeboten');
+    return;
   }
   try {
     await (el.requestFullscreen?.({ navigationUI: 'hide' }) ?? el.webkitRequestFullscreen?.());

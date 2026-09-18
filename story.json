@@ -205,11 +205,13 @@
       "negative": "veil, hood, shroud, female ghost, sheet ghost, faceless"
     },
     "traum_greifen": {
-      "image": "a young woman with long dark hair in a long-sleeved high-necked white linen nightgown sits up in bed reaching both arms toward a ghostly figure dissolving into blue mist, dark ancient stone bedroom",
-      "motion": "she slowly stretches both arms toward the translucent glowing figure in the doorway, the figure gently dissolves into drifting blue mist, her hands close on empty air, subtle realistic motion, static camera",
+      "image": "a young woman with long dark hair in a white linen nightgown sits up in bed, seen from behind, facing the pale ghost of a bearded man in a dark red cloak standing in the misty doorway of a dark ancient stone bedroom at night",
+      "motion": "she leans forward and slowly stretches both arms toward the man in the doorway, he dissolves into drifting blue mist, her hands close on empty air and sink down, static camera, calm realistic motion",
       "subtitle": "Sie greift nach ihm – und umarmt nur Luft.",
       "next": "traum_erwachen",
-      "fx": "dream"
+      "fx": "dream",
+      "negative": "female ghost, ghost in white dress, veiled figure, hood, shroud, arms spread sideways, t-pose, faceless, second woman",
+      "end_image": "empty misty doorway in a dark ancient stone bedroom at night, drifting blue mist, nobody there"
     },
     "traum_fragen": {
       "image": "close-up of the pale translucent face of a bearded man glowing faintly blue in a dark room, wet dark curly hair, sad eyes, a single tear, no hood, bare shoulders, blue moonlight",
