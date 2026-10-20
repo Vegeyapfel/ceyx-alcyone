@@ -133,6 +133,9 @@ function clipWorkflow(id, scene, imageName) {
  * Deutlich realistischere Bewegung und Physik als das 5B-Modell. Das Modell
  * arbeitet nativ mit 16 fps; makeClip interpoliert danach auf 24 fps.
  */
+const STEPS14 = Number(process.env.STEPS14 || 4);
+const SWITCH = Number(process.env.SWITCH || 2);
+
 function clipWorkflow14b(id, scene, imageName, endName) {
   const positive = `${expand(scene.motion)}. ${expand(scene.image)}. cinematic, photorealistic, natural realistic motion, film grain`;
   const negative = 'static, frozen, cartoon, 3d render, deformed, extra limbs, morphing, melting, distorted face, blurry, low quality, text, watermark, subtitles, nude, naked, topless, cleavage';
@@ -156,15 +159,17 @@ function clipWorkflow14b(id, scene, imageName, endName) {
       width: Number(process.env.W || 832), height: Number(process.env.H || 480),
       length: Number(process.env.FRAMES || 81), batch_size: 1,
     } },
+    // STEPS14=8 SWITCH=4 rechnet feiner als die 4-Schritt-Voreinstellung der
+    // lightx2v-LoRA: mehr Zeichnung in Gesichtern, Händen und Stoff.
     13: { class_type: 'KSamplerAdvanced', inputs: {
-      model: ['5', 0], add_noise: 'enable', noise_seed: seed, steps: 4, cfg: 1,
+      model: ['5', 0], add_noise: 'enable', noise_seed: seed, steps: STEPS14, cfg: 1,
       sampler_name: 'euler', scheduler: 'simple', positive: ['12', 0], negative: ['12', 1],
-      latent_image: ['12', 2], start_at_step: 0, end_at_step: 2, return_with_leftover_noise: 'enable',
+      latent_image: ['12', 2], start_at_step: 0, end_at_step: SWITCH, return_with_leftover_noise: 'enable',
     } },
     14: { class_type: 'KSamplerAdvanced', inputs: {
-      model: ['6', 0], add_noise: 'disable', noise_seed: seed, steps: 4, cfg: 1,
+      model: ['6', 0], add_noise: 'disable', noise_seed: seed, steps: STEPS14, cfg: 1,
       sampler_name: 'euler', scheduler: 'simple', positive: ['12', 0], negative: ['12', 1],
-      latent_image: ['13', 0], start_at_step: 2, end_at_step: 10000, return_with_leftover_noise: 'disable',
+      latent_image: ['13', 0], start_at_step: SWITCH, end_at_step: 10000, return_with_leftover_noise: 'disable',
     } },
     15: { class_type: 'VAEDecode', inputs: { samples: ['14', 0], vae: ['8', 0] } },
     16: { class_type: 'CreateVideo', inputs: { images: ['15', 0], fps: 16 } },
