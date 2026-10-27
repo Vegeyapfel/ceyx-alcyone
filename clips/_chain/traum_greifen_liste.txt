@@ -1,2 +1,0 @@
-file 'C:/Users/Administrator/Desktop/Claude Projekte/Latein/film/clips/_chain/traum_greifen_1.mp4'
-file 'C:/Users/Administrator/Desktop/Claude Projekte/Latein/film/clips/_chain/traum_greifen_2.mp4'
