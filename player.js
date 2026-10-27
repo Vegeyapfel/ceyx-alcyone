@@ -123,19 +123,12 @@ async function playScene(id) {
 
   // Clip läuft durch; reicht er nicht zum Lesen, bleibt das letzte Bild mit
   // langsamer Fahrt stehen, statt den Untertitel abzuschneiden.
-  const textMs = Math.max(readTime(scene.subtitle), voiceMs + 600);
-  const need = Math.max(duration, textMs);
+  const need = Math.max(duration, readTime(scene.subtitle), voiceMs + 600);
   if (video.style.display !== 'none' && need > duration) {
     await wait(duration - 150);
     video.pause();
     video.classList.add('hold');
     await wait(need - duration + 150);
-  } else if (scene.subtitle && duration - textMs > 2500) {
-    // Lange Einstellung, kurzer Satz: Untertitel ausblenden und das Bild
-    // allein weiterlaufen lassen, statt den Text minutenlang stehen zu haben.
-    await wait(textMs);
-    subtitle(null);
-    await wait(duration - textMs);
   } else {
     await wait(need);
   }
