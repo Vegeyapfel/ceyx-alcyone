@@ -15,6 +15,12 @@ FRAMES = int(os.environ.get('FRAMES', 121))
 STEPS, SWITCH = int(os.environ.get('STEPS', 8)), int(os.environ.get('SWITCH', 4))
 LISTE = ['hafen_1:2', 'ufer_1:3', 'traum_1:2']
 AUS = '/kaggle/working' if os.path.isdir('/kaggle/working') else '/content/aus'
+# ComfyUI und Modelle gehören auf den großen Zwischenspeicher: der Ausgabeordner
+# ist bei Kaggle auf 20 GB begrenzt, die Modelle brauchen rund 24 GB.
+ARBEIT = '/kaggle/temp' if os.path.isdir('/kaggle') else ('/content/arbeit' if os.path.isdir('/content') else '.')
+os.makedirs(ARBEIT, exist_ok=True)
+os.chdir(ARBEIT)
+print('Arbeitsordner:', ARBEIT, flush=True)
 
 def sh(c):
     print('>', c, flush=True)
