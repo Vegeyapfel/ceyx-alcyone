@@ -240,8 +240,10 @@ async function makeEndStill(id) {
 }
 
 async function makeClip(id) {
-  const dest = path.join(clipsDir, `${id}.mp4`);
-  const still = path.join(stillsDir, `${id}.png`);
+  // START_IMAGE und OUT erlauben es, Abschnitte aneinanderzuhängen: der
+  // nächste Abschnitt beginnt mit dem letzten Bild des vorigen (tools/chain.mjs).
+  const dest = process.env.OUT ? path.resolve(process.env.OUT) : path.join(clipsDir, `${id}.mp4`);
+  const still = process.env.START_IMAGE ? path.resolve(process.env.START_IMAGE) : path.join(stillsDir, `${id}.png`);
   if (fs.existsSync(dest) && !FORCE) return console.log(`= clip ${id} (vorhanden)`);
   if (!fs.existsSync(still)) return console.log(`! clip ${id}: kein Standbild`);
   const t = Date.now();
