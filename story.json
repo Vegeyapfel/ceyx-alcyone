@@ -6,7 +6,8 @@
   "negative": "cartoon, anime, 3d render, painting, text, watermark, logo, modern clothing, deformed hands, extra fingers, blurry, lowres, oversaturated, bad eyes, crossed eyes, asymmetric eyes, lazy eye, dead eyes, blurry face, deformed iris, nude, naked, topless, nipples, cleavage, bare breasts, see-through clothing, lingerie",
   "characters": {
     "CEYX": "a bearded greek king (dark curly hair, short dark beard, red cloak)",
-    "ALCYONE": "a young greek queen (long dark wavy hair, simple white linen dress)"
+    "ALCYONE": "a young greek queen (long dark wavy hair, simple white linen dress)",
+    "SCHIFF": "a small ancient wooden merchant ship with a dark tarred hull, one tall mast carrying a furled square sail, a long angled yard reaching out over the bow, a dark red pennant at the masthead and a low curved stern"
   },
   "start": "hafen_1",
   "scenes": {
@@ -16,14 +17,16 @@
         "ne me fugiens ventos sequerere rogabam",
         "Ich bat dich, nicht vor mir fliehend den Winden zu folgen."
       ],
-      "image": "wide shot of a small ancient greek stone harbour at dawn, an ancient greek galley with one mast, a single square linen sail and a row of oars ready to depart, sailors loading, calm grey sea, soft pink morning mist",
-      "motion": "slow cinematic dolly forward over the harbour, sail gently moving in the wind, sailors walking, gentle waves",
-      "next": "hafen_2"
+      "image": "cinematic wide shot of a small deserted ancient greek stone harbour at first light, dark rocky foreground with a mooring post and coiled rope in sharp focus, SCHIFF lying at the quay, nobody on the quay and nobody on board, warm low sun breaking through behind the headland, deep shadows, strong depth, 35mm anamorphic",
+      "motion": "the mooring rope slips off the post and falls into the water, the ship slowly glides away from the stone quay, the gap of water widens, its reflection ripples, the pennant stirs at the masthead, nobody is visible, slow steady camera",
+      "next": "hafen_2",
+      "negative": "washed out, flat haze, low contrast, pale pink fog, empty harbour, blurry background, two masts, three masts, different ship, galleon, viking longship, dragon head prow, modern sailboat, people, sailors, crew, figures on deck, person on quay, crowd"
     },
     "hafen_2": {
-      "image": "medium shot on a stone quay at dawn: a young woman with long dark hair in a plain white dress holds the hands of a bearded man wearing a dark red cloak, she looks at him pleading, an ancient greek galley behind them, morning mist",
+      "image": "medium shot on a stone quay at dawn, CEYX and ALCYONE stand facing each other holding hands, behind them SCHIFF lies at the quay with sailors loading, calm water, warm low sun",
       "motion": "she grips his hands tighter and speaks pleadingly, his cloak moving in the wind, slow push in",
-      "next": "hafen_rede"
+      "next": "hafen_rede",
+      "negative": "two masts, three masts, different ship, galleon, viking longship, dragon head prow, modern sailboat"
     },
     "hafen_rede": {
       "image": "close-up portrait facing the camera of a young greek woman with long dark wavy hair in a plain white linen dress, speaking softly and pleading, worried eyes, a bearded man in a dark red cloak blurred in the foreground at the edge of the frame, misty harbour at dawn behind her",
@@ -67,10 +70,11 @@
       "next": "hafen_abfahrt"
     },
     "hafen_abfahrt": {
-      "image": "wide shot from behind ALCYONE standing alone at the end of a stone quay, watching an ancient greek galley with one square sail and oars leave the harbour into the misty sea",
+      "image": "wide shot from behind ALCYONE standing alone at the end of a stone quay at dawn, in front of her SCHIFF glides out of the harbour towards the open sea, misty water, warm low sun",
       "motion": "the ship sails slowly away into the mist, her dress and hair move in the wind, static camera",
       "subtitle": "hic retinacula solvit – Hier löste er die Taue.",
-      "next": "sturm_1"
+      "next": "sturm_1",
+      "negative": "two masts, three masts, different ship, galleon, viking longship, dragon head prow, modern sailboat"
     },
     "sturm_1": {
       "chapter": "II · Der Sturm",
@@ -78,16 +82,16 @@
         "fluctibus erigitur caelumque aequare videtur",
         "Die Flut türmt sich und scheint den Himmel zu erreichen."
       ],
-      "image": "dramatic low angle shot from the water surface of an ancient greek trireme with a single short mast and a ripped square sail, tossed on towering storm waves at night, the bow lifting out of a massive wave, white foam and spray everywhere, torrential rain, lightning bolt behind, dark stormy sky",
+      "image": "dramatic low angle shot from the water surface at night, SCHIFF tossed on towering storm waves, the bow lifting out of a massive wave, white foam and spray everywhere, torrential rain, lightning behind, dark stormy sky",
       "motion": "the galley rises over a large wave and slams down into the trough, sea spray bursts over the bow, the torn sail flaps violently, rain streaks sideways, lightning flashes once, realistic heavy water physics, handheld camera slightly shaking",
       "next": "sturm_2",
-      "negative": "galleon, three masts, two masts, multiple masts, pirate ship, caravel, calm sea, flat water, lights on ship, lanterns"
+      "negative": "galleon, three masts, two masts, multiple masts, pirate ship, caravel, calm sea, flat water, lights on ship, lanterns, two masts, three masts, different ship, galleon, viking longship, dragon head prow, modern sailboat"
     },
     "sturm_2": {
-      "image": "dramatic low angle shot from the water surface at night, an ancient greek trireme with a single short mast and a ripped square sail heeling far over, a huge breaking wave of black water collapsing over its deck, white foam pouring across the hull, torrential rain, lightning",
+      "image": "dramatic low angle shot from the water at night, SCHIFF heeling far over as a huge breaking wave of black water collapses over its deck, white foam pouring across the hull, torrential rain, lightning",
       "motion": "the breaking wave collapses over the deck, the hull rolls onto its side and is pulled under the water, the mast goes down with it, only churning foam and broken planks are left on the heaving sea, rain keeps falling, handheld camera, realistic heavy water physics, no cut",
       "next": "sturm_3",
-      "negative": "galleon, three masts, two masts, multiple masts, pirate ship, viking ship, dragon head, curled prow, caravel, calm sea, flat water, lights on ship, lanterns, toy boat, miniature, cotton, smoke, cliffs, coast, land, rocks, island, mountains",
+      "negative": "galleon, three masts, two masts, multiple masts, pirate ship, viking ship, dragon head, curled prow, caravel, calm sea, flat water, lights on ship, lanterns, toy boat, miniature, cotton, smoke, cliffs, coast, land, rocks, island, mountains, two masts, three masts, different ship, galleon, viking longship, dragon head prow, modern sailboat",
       "end_image": "empty stormy black sea at night, huge churning waves and white foam, broken wooden planks drifting, torrential rain, lightning"
     },
     "sturm_3": {
