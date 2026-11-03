@@ -88,11 +88,11 @@
       "negative": "galleon, three masts, two masts, multiple masts, pirate ship, caravel, calm sea, flat water, lights on ship, lanterns, two masts, three masts, different ship, galleon, viking longship, dragon head prow, modern sailboat"
     },
     "sturm_2": {
-      "image": "dramatic low angle shot from the water at night, SCHIFF heeling far over as a huge breaking wave of black water collapses over its deck, white foam pouring across the hull, torrential rain, lightning",
-      "motion": "the breaking wave collapses over the deck, the hull rolls onto its side and is pulled under the water, the mast goes down with it, only churning foam and broken planks are left on the heaving sea, rain keeps falling, handheld camera, realistic heavy water physics, no cut",
+      "image": "SCHIFF seen from the water at night in a violent storm, heeling steeply as an enormous wall of black water rises right beside it, the deck already awash, torn rigging, torrential rain, lightning, open sea with no land in sight",
+      "motion": "the wave collapses onto the deck, the ship is pushed over onto its side, the mast swings down and strikes the water, the hull rolls and is dragged under, planks tear loose and spin away, at the end only foam and a floating plank remain on the heaving sea",
       "next": "sturm_3",
-      "negative": "galleon, three masts, two masts, multiple masts, pirate ship, viking ship, dragon head, curled prow, caravel, calm sea, flat water, lights on ship, lanterns, toy boat, miniature, cotton, smoke, cliffs, coast, land, rocks, island, mountains, two masts, three masts, different ship, galleon, viking longship, dragon head prow, modern sailboat",
-      "end_image": "empty stormy black sea at night, huge churning waves and white foam, broken wooden planks drifting, torrential rain, lightning"
+      "negative": "land, shore, rocks, beach, intact ship at the end, calm water, daylight, red sail, two masts",
+      "end_image": "black stormy sea at night after a shipwreck, only churning white foam and a few broken wooden planks drifting, no ship at all, heavy rain, lightning"
     },
     "sturm_3": {
       "image": "close-up of a drowning man in the black sea at night, only his head and shoulders above the water, CEYX, both arms wrapped around a floating broken wooden plank, soaked hair, rain, lightning",
