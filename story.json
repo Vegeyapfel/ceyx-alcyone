@@ -119,10 +119,12 @@
       }
     },
     "sturm_ruf": {
-      "image": "close-up of CEYX in the black storm sea shouting a name, water in his beard, desperate eyes, rain",
-      "motion": "he lifts his head above the water and calls out, rain falling, water around him moves, subtle camera sway, face stays stable",
+      "image": "CEYX in the open sea at night during a storm, almost completely submerged, only his head and the tops of his shoulders above the black water, waterline across his chin, soaked hair and beard plastered to his face, mouth open calling out, heavy rain hammering the surface, white foam and spray all around him, open water to the horizon with no land in sight, dark green-black waves, lightning in the clouds",
+      "motion": "he lifts his face out of the black water and shouts a name into the storm, then a wave rises behind him and breaks right over his head, white foam swallows him completely and only churning water is left, heavy rain, handheld camera close to the surface",
       "subtitle": "nominat Alcyonen ipsisque inmurmurat undis – Er nennt Alkyones Namen und murmelt ihn in die Wellen.",
-      "next": "sturm_welle"
+      "next": "sturm_welle",
+      "negative": "land, shore, rocks, cliff, beach, island, standing, dry chest, visible torso above water, shallow water, calm sea, turquoise water, daylight, cloak visible",
+      "end_image": "a breaking wave of black storm water with thick white foam at night, open sea, nobody in the water"
     },
     "sturm_stern": {
       "image": "low angle view from the stormy sea up to a dark cloud-covered night sky, a single bright morning star disappearing behind black clouds",
