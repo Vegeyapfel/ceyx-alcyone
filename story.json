@@ -168,10 +168,10 @@
       }
     },
     "warten_gebet": {
-      "image": "ALCYONE kneeling before a stone altar in a dim ancient temple of Juno, incense smoke rising in a shaft of light",
+      "image": "interior of an ancient greek temple at night seen from the side aisle, massive painted columns in the foreground, a stone altar with a low fire in the middle of the hall, smoke rising into the dark roof, the tall cult statue of Juno behind the altar lit from below, ALCYONE kneeling small before the altar with folded hands, warm firelight, deep shadows, 35mm",
       "motion": "incense smoke curls up through the light beam, she lifts her hands in prayer",
       "subtitle": "Sie betet für einen, der nicht mehr lebt.",
-      "next": "traum_1"
+      "next": "warten_gebet_2"
     },
     "warten_weben": {
       "image": "ALCYONE weaving a deep red cloth at a wooden bronze age loom by lamplight at night",
@@ -358,6 +358,12 @@
       "motion": "two kingfishers fly past the grave marker and out over the sea",
       "subtitle": "Ovid erzählt es anders – doch auch hier blieb die Liebe.",
       "end": "shore"
+    },
+    "warten_gebet_2": {
+      "image": "interior of an ancient greek temple at night seen from the side aisle, massive painted columns in the foreground, a stone altar with a low fire in the middle of the hall, smoke rising into the dark roof, the tall cult statue of Juno behind the altar lit from below, ALCYONE kneeling small before the altar with folded hands, warm firelight, deep shadows, 35mm",
+      "motion": "she kneels before the altar fire deep in the temple hall, the flame throws moving shadows on the columns, smoke drifts upward, she bows her head, slow steady camera",
+      "subtitle": "Weihrauch bringt sie allen Göttern dar, doch Junos Tempel verehrt sie vor allen.",
+      "next": "traum_1"
     }
   }
 }
