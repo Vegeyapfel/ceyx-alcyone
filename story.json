@@ -89,9 +89,9 @@
     },
     "sturm_2": {
       "image": "SCHIFF seen from the water at night in a violent storm, heeling steeply as an enormous wall of black water rises right beside it, the deck already awash, torn rigging, torrential rain, lightning, open sea with no land in sight",
-      "motion": "an enormous wave rises beside the ship and collapses onto the deck, the hull is pushed over onto its side, the mast swings down and strikes the water, the ship rolls and is dragged under, broken planks spin away, at the end only churning foam and drifting planks remain, torrential rain, open sea with no land, handheld camera",
+      "motion": "the ship is lifted sideways on the swell, a huge wave strikes it broadside and it heels over onto its flank, the mast tilts sideways down to the water and the sail collapses into the foam, the hull is swallowed by the breaking wave and slides under, at the end only churning open sea remains, heavy rain, handheld camera at water level",
       "next": "sturm_3",
-      "negative": "ship, boat, hull, mast, sail, pier, jetty, boardwalk, deck, planks in foreground, land, shore, rocks, cliff, island, beach, calm water, daylight",
+      "negative": "ship, boat, hull, mast, sail, pier, jetty, boardwalk, deck, planks in foreground, land, shore, rocks, cliff, island, beach, calm water, daylight, pitching forward, bow down, nose diving, tipping over the bow, toy boat",
       "end_image": "open storm sea at night seen from water level, enormous churning black waves and thick white foam filling the whole frame, empty horizon, torrential rain, lightning, nothing man made in the picture"
     },
     "sturm_3": {
