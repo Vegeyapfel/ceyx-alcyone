@@ -121,8 +121,8 @@
     "sturm_ruf": {
       "image": "CEYX in the open sea at night during a storm, almost completely submerged, only his head and the tops of his shoulders above the black water, waterline across his chin, soaked hair and beard plastered to his face, mouth open calling out, heavy rain hammering the surface, white foam and spray all around him, open water to the horizon with no land in sight, dark green-black waves, lightning in the clouds",
       "motion": "he lifts his face out of the black water and shouts a name into the storm, then a wave rises behind him and breaks right over his head, white foam swallows him completely and only churning water is left, heavy rain, handheld camera close to the surface",
-      "subtitle": "nominat Alcyonen ipsisque inmurmurat undis – Er nennt Alkyones Namen und murmelt ihn in die Wellen, bis ein schwarzer Bogen aus Wasser über ihm zusammenbricht.",
-      "next": "warten_1",
+      "subtitle": "nominat Alcyonen ipsisque inmurmurat undis – Er nennt Alkyones Namen und murmelt ihn in die Wellen.",
+      "next": "sturm_welle",
       "negative": "land, shore, rocks, cliff, beach, island, standing, dry chest, visible torso above water, shallow water, calm sea, turquoise water, daylight, cloak visible",
       "end_image": "a breaking wave of black storm water with thick white foam at night, open sea, nobody in the water"
     },
@@ -130,12 +130,12 @@
       "image": "low angle view from the stormy sea up to a dark cloud-covered night sky, a single bright morning star disappearing behind black clouds",
       "motion": "black storm clouds slowly swallow the bright star, lightning inside the clouds",
       "subtitle": "Lucifer obscurus – Der Morgenstern, sein Vater, verhüllt sein Gesicht.",
-      "next": "warten_1"
+      "next": "sturm_welle"
     },
     "sturm_welle": {
       "image": "close shot of a drowning bearded man in a soaked red cloak in the black storm sea at night, head and shoulders above the choppy water, arms gripping a broken wooden plank, rain, lightning",
       "motion": "he struggles in the water, arms pulling at the plank, head lifting to breathe, waves lift and drop him, then a dark wall of water rises behind him and collapses over him, he disappears under the churning white foam, handheld camera, realistic heavy water physics",
-      "subtitle": "Ein schwarzer Bogen aus Wasser bricht über ihm zusammen.",
+      "subtitle": "niger arcus aquarum frangitur et rupta mersum caput obruit unda – Ein schwarzes Gewölbe aus Wogen zerbirst und versenkt seinen Kopf.",
       "next": "warten_1",
       "end_image": "a wall of black storm water and churning white foam filling the frame at night, no person"
     },
@@ -185,8 +185,8 @@
         "agnoscis Ceyca, miserrima coniunx?",
         "Erkennst du Ceyx, du ärmste Gemahlin?"
       ],
-      "image": "a young woman with long dark hair asleep in a bed, dressed in a long-sleeved high-necked white linen nightgown, blanket up to her shoulders, dark ancient stone bedroom in blue moonlight; standing beside the bed a pale translucent glowing ghost of a bearded man with wet dark curly hair and a short beard, bare shoulders, water dripping, sorrowful face turned toward her",
-      "motion": "the pale translucent bearded ghost slowly leans over the sleeping woman, water drips from his hair and beard, blue mist drifts through the room, she stirs slightly in her sleep, static camera",
+      "image": "photograph of a man standing alone in a dark ancient stone chamber at night, seen from the side at eye level, he is about thirty with dark curly hair and a short beard, bare chest, his hair and shoulders soaking wet with water running down his skin, he looks down and slightly forward with a grieving face, a small clay oil lamp on a ledge lights him warmly from one side, in the blurred foreground at the bottom edge of the frame the corner of a bed with the shoulder and dark hair of a sleeping woman, shallow depth of field, 50mm, documentary photo, natural skin texture",
+      "motion": "water drips from his hair and beard onto the floor, his chest rises and falls, he lowers his head and his lips move as he speaks, the lamp flame wavers and shadows shift on the wall, the sleeping woman in the foreground does not move, static camera",
       "subtitle": "Im Traum steht Ceyx vor ihr, bleich und triefend: Er sei tot, der Südwind habe sein Schiff zerschlagen.",
       "choice": {
         "prompt": "Was tut Alcyone im Traum?",
@@ -208,7 +208,7 @@
         ]
       },
       "fx": "dream",
-      "negative": "veil, hood, shroud, female ghost, sheet ghost, faceless"
+      "negative": "ghost, apparition, transparent, translucent, glowing, light column, blue moonlight, veil, shroud, smoke, double exposure, two men, second person standing, woman standing, oversized head, giant, fisheye, modern furniture, lampshade, clothing on the man"
     },
     "traum_greifen": {
       "image": "close shot from slightly above of ALCYONE lying asleep on her back in bed, her head on a white pillow, tears on her cheeks, eyes closed, her arms resting on the blanket, dark ancient bedroom, cold blue moonlight falling across her face",
