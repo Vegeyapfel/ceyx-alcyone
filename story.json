@@ -89,10 +89,10 @@
     },
     "sturm_2": {
       "image": "SCHIFF seen from the water at night in a violent storm, heeling steeply as an enormous wall of black water rises right beside it, the deck already awash, torn rigging, torrential rain, lightning, open sea with no land in sight",
-      "motion": "the wave collapses onto the deck, the ship is pushed over onto its side, the mast swings down and strikes the water, the hull rolls and is dragged under, planks tear loose and spin away, at the end only foam and a floating plank remain on the heaving sea",
+      "motion": "an enormous wave rises beside the ship and collapses onto the deck, the hull is pushed over onto its side, the mast swings down and strikes the water, the ship rolls and is dragged under, broken planks spin away, at the end only churning foam and drifting planks remain, torrential rain, open sea with no land, handheld camera",
       "next": "sturm_3",
-      "negative": "land, shore, rocks, beach, intact ship at the end, calm water, daylight, red sail, two masts",
-      "end_image": "black stormy sea at night after a shipwreck, only churning white foam and a few broken wooden planks drifting, no ship at all, heavy rain, lightning"
+      "negative": "ship, boat, hull, mast, sail, pier, jetty, boardwalk, deck, planks in foreground, land, shore, rocks, cliff, island, beach, calm water, daylight",
+      "end_image": "open storm sea at night seen from water level, enormous churning black waves and thick white foam filling the whole frame, empty horizon, torrential rain, lightning, nothing man made in the picture"
     },
     "sturm_3": {
       "image": "close-up of a drowning man in the black sea at night, only his head and shoulders above the water, CEYX, both arms wrapped around a floating broken wooden plank, soaked hair, rain, lightning",
