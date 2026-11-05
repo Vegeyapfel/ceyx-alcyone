@@ -40,7 +40,7 @@
             "set": {
               "farewell": "plea"
             },
-            "goto": "hafen_schwur"
+            "goto": "hafen_flehen"
           },
           {
             "label": "Sie lässt ihn mit einem Kuss ziehen",
@@ -130,7 +130,7 @@
       "image": "low angle view from the stormy sea up to a dark cloud-covered night sky, a single bright morning star disappearing behind black clouds",
       "motion": "black storm clouds slowly swallow the bright star, lightning inside the clouds",
       "subtitle": "Lucifer obscurus – Der Morgenstern, sein Vater, verhüllt sein Gesicht.",
-      "next": "sturm_welle"
+      "next": "warten_1"
     },
     "sturm_welle": {
       "image": "close shot of a drowning bearded man in a soaked red cloak in the black storm sea at night, head and shoulders above the choppy water, arms gripping a broken wooden plank, rain, lightning",
