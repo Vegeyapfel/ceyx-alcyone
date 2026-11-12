@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ceyx & Alcyone – Mitentscheiden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#05070a">
+<style>
+  :root { --gold: #d9b877; --elfenbein: #e9e2d4; --leise: #9c9588; --weich: cubic-bezier(.2,.7,.2,1); }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; background: #05070a; color: var(--elfenbein);
+    font-family: 'Cormorant Garamond', Georgia, serif; }
+  body { min-height: 100dvh; display: flex; flex-direction: column; overflow-x: hidden;
+    background: radial-gradient(120% 70% at 50% 30%, #131c25 0%, #05070a 70%);
+    padding: max(20px, env(safe-area-inset-top)) 26px max(22px, env(safe-area-inset-bottom)); }
+  body::after { content: ''; position: fixed; inset: 0; pointer-events: none; opacity: .06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  header { text-align: center; }
+  header .marke { margin: 6px 0 0; font-size: 22px; letter-spacing: .06em; }
+  header .marke span { color: var(--gold); font-style: italic; }
+  header .haar { width: 44px; height: 1px; margin: 12px auto 0; background: rgba(217,184,119,.55); }
+
+  main { flex: 1; display: grid; align-items: center; }
+  .ansicht { grid-area: 1 / 1; display: flex; flex-direction: column; text-align: center;
+    opacity: 0; transform: translateY(12px); pointer-events: none;
+    transition: opacity .7s var(--weich), transform .7s var(--weich); }
+  .ansicht.an { opacity: 1; transform: none; pointer-events: auto; }
+
+  h2 { margin: 0; font-weight: 400; font-style: italic; font-size: 36px; line-height: 1.1; }
+  .leise { margin: 14px auto 0; max-width: 26ch; color: var(--leise); font-size: 19px; line-height: 1.45; }
+  .gold { color: var(--gold); }
+
+  /* Warten: ein Lichtpunkt kreist langsam um eine Haarlinie */
+  .kreis { position: relative; width: 74px; height: 74px; margin: 0 auto 30px; border-radius: 50%;
+    border: 1px solid rgba(217,184,119,.28); }
+  .kreis i { position: absolute; inset: -4px; animation: kreisen 6s linear infinite; }
+  .kreis i::before { content: ''; position: absolute; top: 0; left: 50%; width: 7px; height: 7px; margin-left: -3.5px;
+    border-radius: 50%; background: #f6ecd3; box-shadow: 0 0 12px 3px rgba(217,184,119,.7); }
+  @keyframes kreisen { to { transform: rotate(360deg); } }
+
+  /* Frage */
+  .zeit { height: 1px; margin: 0 0 30px; background: rgba(217,184,119,.16); }
+  .zeit i { display: block; height: 100%; background: var(--gold); transform-origin: center; box-shadow: 0 0 8px rgba(217,184,119,.8); }
+  .frage { margin: 0 0 26px; font-style: italic; font-size: 29px; line-height: 1.2; color: var(--gold); }
+  .wahl { display: flex; flex-direction: column; border-top: 1px solid rgba(217,184,119,.28); }
+  .wahl button { position: relative; overflow: hidden; display: flex; align-items: center; gap: 18px; width: 100%;
+    min-height: 92px; padding: 18px 6px; text-align: left; font-family: inherit; font-size: 24px; line-height: 1.22;
+    color: var(--elfenbein); background: none; border: 0; border-bottom: 1px solid rgba(217,184,119,.28);
+    cursor: pointer; transition: opacity .6s ease, color .4s ease; }
+  .wahl button::before { content: ''; position: absolute; inset: 0; z-index: -1; transform: scaleX(0); transform-origin: left;
+    background: linear-gradient(90deg, rgba(217,184,119,.28), rgba(217,184,119,.06)); transition: transform .65s var(--weich); }
+  .wahl button:active::before { transform: scaleX(.06); }
+  .wahl button .roem { flex: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; border: 1px solid rgba(217,184,119,.55); color: var(--gold); font-size: 17px; letter-spacing: .12em;
+    transition: background .5s ease, color .5s ease, border-color .5s ease; }
+  .wahl button.gewaehlt::before { transform: scaleX(1); }
+  .wahl button.gewaehlt .roem { background: var(--gold); color: #0b0c0d; border-color: var(--gold); }
+  .wahl.zu button:not(.gewaehlt) { opacity: .28; }
+  .wahl.zu button { pointer-events: none; }
+  .wahl { isolation: isolate; }
+  .status { min-height: 26px; margin: 22px 0 0; font-style: italic; color: var(--leise); font-size: 19px;
+    transition: color .5s ease; }
+  .status.gold { color: var(--gold); }
+
+  /* Code eingeben */
+  form { display: flex; flex-direction: column; align-items: center; gap: 22px; margin-top: 26px; }
+  input { width: 100%; max-width: 280px; padding: 10px 0 12px; background: transparent; border: 0;
+    border-bottom: 1px solid rgba(217,184,119,.5); color: var(--gold); font-family: inherit; font-size: 40px;
+    letter-spacing: .3em; text-indent: .3em; text-align: center; text-transform: uppercase; border-radius: 0; }
+  input:focus { outline: none; border-bottom-color: var(--gold); }
+  input::placeholder { color: rgba(217,184,119,.25); }
+  form button { font-family: inherit; font-size: 21px; letter-spacing: .08em; color: var(--elfenbein); background: none;
+    border: 1px solid rgba(217,184,119,.55); padding: 12px 34px; cursor: pointer; }
+  .fehler { min-height: 22px; color: #c98a72; font-style: italic; font-size: 17px; }
+
+  footer { text-align: center; color: #5d584f; font-size: 15px; letter-spacing: .14em; }
+  @media (prefers-reduced-motion: reduce) { .kreis i { animation: none; } }
+</style>
+</head>
+<body>
+<header>
+  <p class="marke">Ceyx <span>&amp;</span> Alcyone</p>
+  <div class="haar"></div>
+</header>
+
+<main>
+  <section class="ansicht" id="v-code">
+    <h2>Mitentscheiden</h2>
+    <p class="leise">Gib den Code ein, der vorne auf dem Bildschirm steht.</p>
+    <form id="codeform">
+      <input id="codefeld" maxlength="7" placeholder="······" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Raumcode">
+      <button type="submit">Beitreten</button>
+      <div class="fehler" id="codefehler"></div>
+    </form>
+  </section>
+
+  <section class="ansicht" id="v-warten">
+    <div class="kreis"><i></i></div>
+    <h2>Du bist dabei.</h2>
+    <p class="leise">Schau nach vorne. Bei der nächsten Entscheidung erscheint hier die Wahl.</p>
+  </section>
+
+  <section class="ansicht" id="v-frage">
+    <div class="zeit"><i id="zeit"></i></div>
+    <p class="frage" id="frage"></p>
+    <div class="wahl" id="wahl"></div>
+    <p class="status" id="status"></p>
+  </section>
+
+  <section class="ansicht" id="v-ende">
+    <h2 class="gold">Finis.</h2>
+    <p class="leise">Danke fürs Mitentscheiden.</p>
+  </section>
+</main>
+<footer id="fuss"></footer>
+
+<script type="module">
+  import { kanal } from './kanal.js';
+  const $ = (s) => document.querySelector(s);
+  const ROEMISCH = ['I', 'II', 'III', 'IV'];
+  const zeige = (id) => document.querySelectorAll('.ansicht').forEach((v) => v.classList.toggle('an', v.id === id));
+
+  // Anonyme Kennung dieses Handys – nur damit jede Person eine Stimme hat
+  let ich = '';
+  try { ich = localStorage.getItem('ceyx_handy') || ''; } catch {}
+  if (!ich) { ich = Math.random().toString(36).slice(2, 12); try { localStorage.setItem('ceyx_handy', ich); } catch {} }
+
+  const params = new URLSearchParams(location.search);
+  const raum = (params.get('r') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  if (!/^[A-Z2-9]{6}$/.test(raum)) {
+    zeige('v-code');
+    setTimeout(() => $('#codefeld').focus(), 300);
+    $('#codeform').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const c = $('#codefeld').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (!/^[A-Z2-9]{6}$/.test(c)) { $('#codefehler').textContent = 'Der Code hat sechs Zeichen.'; return; }
+      params.set('r', c);
+      location.search = params.toString();
+    });
+  } else {
+    beitreten(raum);
+  }
+
+  function beitreten(raum) {
+    zeige('v-warten');
+    $('#fuss').textContent = `${raum.slice(0, 3)} ${raum.slice(3)}`;
+    let aktuell = null;   // laufende Frage
+    let gewaehlt = null;
+    let ablauf = 0;
+
+    const verbindung = kanal(raum, empfang, { rueckblick: '20s' });
+    verbindung.senden({ t: 'da', id: ich });
+
+    function empfang(m) {
+      if (!m || !m.t) return;
+      if (m.t === 'hallo') verbindung.senden({ t: 'da', id: ich });
+      else if (m.t === 'frage') frage(m);
+      else if (m.t === 'zu') entschieden(m);
+      else if (m.t === 'ende') { aktuell = null; zeige('v-ende'); }
+      else if (m.t === 'warten') { aktuell = null; zeige('v-warten'); }
+    }
+
+    function frage(m) {
+      const ende = (m.ts || Date.now()) + (m.ms || 0);
+      if (Date.now() > ende + 2500) return;               // alte Frage aus dem Rückblick
+      if (aktuell && aktuell.n === m.n) return;           // schon angezeigt
+      aktuell = { n: m.n, ende, o: m.o };
+      gewaehlt = null;
+      clearTimeout(ablauf);
+      $('#frage').textContent = m.q;
+      const status = $('#status');
+      status.textContent = '';
+      status.classList.remove('gold');
+      const box = $('#wahl');
+      box.className = 'wahl';
+      box.innerHTML = '';
+      m.o.forEach((text, i) => {
+        const b = document.createElement('button');
+        b.innerHTML = `<span class="roem">${ROEMISCH[i] || i + 1}</span>`;
+        b.append(text);
+        b.onclick = () => stimmen(i, b);
+        box.append(b);
+      });
+      // Zeitlinie per CSS-Übergang
+      const rest = Math.max(0, ende - Date.now());
+      const zeit = $('#zeit');
+      zeit.style.transition = 'none';
+      zeit.style.transform = `scaleX(${Math.min(1, rest / Math.max(1, m.ms || rest))})`;
+      void zeit.offsetWidth;
+      zeit.style.transition = `transform ${rest}ms linear`;
+      zeit.style.transform = 'scaleX(0)';
+      zeige('v-frage');
+      navigator.vibrate?.(15);
+      ablauf = setTimeout(() => {
+        if (gewaehlt === null && aktuell && aktuell.n === m.n) {
+          box.classList.add('zu');
+          status.textContent = 'Die Zeit ist um – die Klasse entscheidet …';
+        }
+      }, rest);
+    }
+
+    function stimmen(i, knopf) {
+      if (!aktuell || gewaehlt !== null || Date.now() > aktuell.ende + 500) return;
+      gewaehlt = i;
+      knopf.classList.add('gewaehlt');
+      $('#wahl').classList.add('zu');
+      $('#status').textContent = 'Deine Stimme ist gezählt.';
+      navigator.vibrate?.(30);
+      verbindung.senden({ t: 'stimme', n: aktuell.n, i, id: ich });
+    }
+
+    function entschieden(m) {
+      if (!aktuell || m.n !== aktuell.n) return;
+      clearTimeout(ablauf);
+      const fertig = aktuell.n;
+      const zurueck = () => setTimeout(() => { if (aktuell && aktuell.n === fertig) { aktuell = null; zeige('v-warten'); } }, 4200);
+      if (!(m.w >= 0)) { zurueck(); return; }
+      const zeit = $('#zeit');
+      zeit.style.transition = 'transform .3s ease';
+      zeit.style.transform = 'scaleX(0)';
+      const box = $('#wahl');
+      box.classList.add('zu');
+      [...box.children].forEach((b, i) => b.classList.toggle('gewaehlt', i === m.w));
+      const status = $('#status');
+      status.textContent = gewaehlt === m.w ? 'Die Klasse hat entschieden – wie du.' : 'Die Klasse hat entschieden.';
+      status.classList.add('gold');
+      navigator.vibrate?.([20, 60, 20]);
+      zurueck();
+    }
+  }
+</script>
+</body>
+</html>

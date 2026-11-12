@@ -1,0 +1,106 @@
+<!doctype html>
+<!-- ERZEUGT aus index.html durch tools/klasse_bauen.mjs – nicht von Hand ändern. -->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ceyx & Alcyone – Ein interaktiver Film · Klassenversion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ceyx &amp; Alcyone">
+<meta name="theme-color" content="#05070a">
+<link rel="stylesheet" href="player.css">
+<link rel="stylesheet" href="klasse.css">
+</head>
+<body>
+<style>
+  /* Kennwortschleier: hält Zufallsbesucher ab, ersetzt keine echte Zugangssperre. */
+  #gate { position: fixed; inset: 0; z-index: 99; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 18px; background: #07090b; color: #e8e2d4;
+    font-family: 'Cormorant Garamond', Georgia, serif; text-align: center; }
+  #gate h2 { font-size: clamp(28px, 5vw, 46px); font-weight: 400; letter-spacing: .08em; margin: 0; }
+  #gate p { opacity: .6; margin: 0; font-size: 16px; letter-spacing: .04em; }
+  #gate form { display: flex; gap: 10px; }
+  #gate input { width: 190px; padding: 12px 14px; background: transparent; border: 1px solid #6b6455;
+    color: #e8e2d4; font-family: inherit; font-size: 22px; letter-spacing: .5em; text-align: center; border-radius: 2px; }
+  #gate input:focus { outline: none; border-color: #c8b78a; }
+  #gate button { padding: 12px 22px; background: transparent; border: 1px solid #6b6455; color: #e8e2d4;
+    font-family: inherit; font-size: 18px; letter-spacing: .12em; cursor: pointer; border-radius: 2px; }
+  #gate button:hover { border-color: #c8b78a; color: #fff; }
+  #gate .err { color: #c96b5b; min-height: 20px; font-size: 15px; }
+</style>
+
+<div id="gate">
+  <h2>Ceyx &amp; Alcyone</h2>
+  <p>Zugang nur mit Kennwort</p>
+  <form id="gateform">
+    <input id="gatepw" type="password" inputmode="numeric" maxlength="6" autocomplete="off" aria-label="Kennwort">
+    <button type="submit">Öffnen</button>
+  </form>
+  <div class="err" id="gateerr"></div>
+</div>
+<script>
+  (function () {
+    const PW = '559748';
+    const gate = document.getElementById('gate');
+    try { if (localStorage.getItem('ceyx_ok') === '1') { gate.remove(); return; } } catch (e) {}
+    const pw = document.getElementById('gatepw');
+    document.getElementById('gateform').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (pw.value.trim() === PW) {
+        try { localStorage.setItem('ceyx_ok', '1'); } catch (e) {}
+        gate.remove();
+      } else {
+        document.getElementById('gateerr').textContent = 'Falsches Kennwort';
+        pw.value = '';
+      }
+    });
+    pw.focus();
+  })();
+</script>
+
+  <div id="stage">
+    <div class="layer" id="layerA"><video playsinline muted preload="auto"></video><div class="still"></div></div>
+    <div class="layer" id="layerB"><video playsinline muted preload="auto"></video><div class="still"></div></div>
+    <div id="letterbox"></div>
+    <div id="grain"></div>
+
+    <div id="chapter" class="hidden">
+      <div class="mark"></div>
+      <div class="latin"></div>
+      <div class="german"></div>
+    </div>
+
+    <div id="subtitle" class="hidden"></div>
+
+    <div id="choice" class="hidden">
+      <div class="question"></div>
+      <div class="options"></div>
+    </div>
+
+    <div id="title">
+      <h1>Ceyx <span>&amp;</span> Alcyone</h1>
+      <p class="sub">Ein interaktiver Film nach Ovid, Metamorphosen XI</p>
+      <p class="hint">Deine Entscheidungen verändern den Film · Kopfhörer empfohlen</p>
+      <button id="start">Beginnen</button>
+    </div>
+
+    <button id="fs" title="Vollbild (F)" aria-label="Vollbild">⛶</button>
+
+    <div id="rotate"><div class="icon">⟳</div><div>Bitte das Handy quer drehen</div></div>
+
+    <div id="end" class="hidden">
+      <div class="endtitle"></div>
+      <div class="path"></div>
+      <button id="again">Noch einmal – anders entscheiden</button>
+    </div>
+  </div>
+  <script src="vendor/qrcode.js"></script>
+  <script type="module" src="player.js"></script>
+  <script type="module" src="klasse.js"></script>
+</body>
+</html>
