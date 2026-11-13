@@ -1,31 +1,61 @@
-// Klassenversion: läuft neben dem unveränderten player.js.
-// Startbild: Einladung mit QR-Code. Bei jeder Entscheidung stimmen die Handys
-// 5 Sekunden ab; statt der Knöpfe zeigt der Fernseher eine Waage, deren Perle
-// zur Mehrheit gleitet. Danach klickt dieses Skript selbst die Mehrheit an.
+// Klassenversion: läuft neben player_klasse.js (aus player.js erzeugt).
+// – Startbild als Lobby: QR-Tafel, Code, Publikum mit Namen aus den Metamorphosen
+//   (jedes Handy dreht sein Glücksrad; der Fernseher vergibt jeden Namen nur einmal)
+// – Abstimmung als Waage: 5 Sekunden, Perle gleitet zur Mehrheit, Funken mit Namen
+// – Steuerleiste im Film: vorige Szene, Szene von vorn, Pause
 // Ohne Handys oder ohne Stimme bleibt alles wie im Original (Klick, Taste 1/2).
 
-import { kanal, neuerCode, LOKAL } from './kanal.js';
+import { kanal, neuerCode, LOKAL, DIENST, STANDARD } from './kanal.js';
+import { NAMEN, roemisch, zahlRoemisch } from './namen.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const RUNDE_MS = 5000;     // Abstimmzeit
 const NACHFRIST = 700;     // Stimmen, die noch unterwegs waren
 const ZEIGEN_MS = 1700;    // so lange steht das Ergebnis, bevor der Film weiterläuft
-const ROEMISCH = ['I', 'II', 'III', 'IV'];
+const DREH_MS = 5000;      // so lange dreht das Glücksrad auf dem Handy, bis der Name vorne erscheint
+const ROEM = ['I', 'II', 'III', 'IV'];
+const MACHER = 'Ein Film von Max, Henri und Julian';
 
-// ---------- Raum ----------
-let code = '';
-try { code = sessionStorage.getItem('ceyx_raum') || ''; } catch { /* privat */ }
-if (!/^[A-Z2-9]{6}$/.test(code)) {
-  code = neuerCode();
-  try { sessionStorage.setItem('ceyx_raum', code); } catch { /* egal */ }
-}
-const handys = new Set();
+// ---------- Raum und Namen ----------
+const merke = (k, v) => { try { sessionStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v)); } catch { /* privat */ } };
+const lies = (k) => { try { return sessionStorage.getItem(k); } catch { return null; } };
+
+let code = lies('ceyx_raum') || '';
+if (!/^[A-Z2-9]{6}$/.test(code)) { code = neuerCode(); merke('ceyx_raum', code); }
+
+/** Kennung des Handys → Spielername. Bleibt beim Neuladen der Seite erhalten. */
+let vergeben = {};
+try { vergeben = JSON.parse(lies(`ceyx_namen_${code}`) || '{}'); } catch { vergeben = {}; }
+const handys = new Set(Object.keys(vergeben));
 let runde = null;
+
+function nameFuer(id) {
+  if (vergeben[id]) return vergeben[id];
+  const belegt = new Set(Object.values(vergeben));
+  const frei = NAMEN.map((x) => x.n).filter((n) => !belegt.has(n));
+  let name;
+  if (frei.length) name = frei[Math.floor(Math.random() * frei.length)];
+  else {
+    // Mehr Handys als Namen: zweite Runde mit römischer Zahl
+    const k = Object.keys(vergeben).length;
+    name = `${NAMEN[k % NAMEN.length].n} ${zahlRoemisch(2 + Math.floor(k / NAMEN.length) - 1)}`;
+  }
+  vergeben[id] = name;
+  merke(`ceyx_namen_${code}`, vergeben);
+  return name;
+}
+
 const verbindung = kanal(code, empfang);
+let namenUhr = 0;
+/** Namen gebündelt verschicken – spart Nachrichten, wenn viele gleichzeitig beitreten. */
+function namenSenden() {
+  clearTimeout(namenUhr);
+  namenUhr = setTimeout(() => verbindung.senden({ t: 'namen', m: vergeben }), 350);
+}
 setTimeout(() => verbindung.senden({ t: 'hallo' }), 1500);   // nach Neuladen melden sich Handys neu
 
 const link = new URL('waehlen.html', location.href);
-link.search = `?r=${code}${LOKAL ? '&lokal=1' : ''}`;
+link.search = `?r=${code}${LOKAL ? '&lokal=1' : ''}${DIENST !== STANDARD && !LOKAL ? `&dienst=${DIENST}` : ''}`;
 const codeHtml = `${code.slice(0, 3)}<span class="k-luft"></span>${code.slice(3)}`;
 
 // ---------- QR-Code auf einer römischen Inschriftentafel (tabula ansata) ----------
@@ -37,11 +67,11 @@ function qrSvg(text, mitInschrift = true) {
   q.addData(text);
   q.make();
   const n = q.getModuleCount();
-  const rand = 4;                         // heller Rand um den Code (Ruhezone)
-  const oben = mitInschrift ? 6.5 : 0;    // Platz für die Inschrift
-  const bw = n + rand * 2;                // Tafel ohne Griffe
+  const rand = 4;
+  const oben = mitInschrift ? 6.5 : 0;
+  const bw = n + rand * 2;
   const bh = n + rand * 2 + oben;
-  const ohr = 7;                          // Breite eines Griffs
+  const ohr = 7;
   const W = bw + ohr * 2;
   const x0 = ohr;
   let pfad = '';
@@ -63,42 +93,81 @@ function qrSvg(text, mitInschrift = true) {
     ${mitInschrift ? `<text x="${W / 2}" y="${oben + 0.9}" class="k-inschrift">SVFFRAGIA · FERTE</text>` : ''}
     <path d="${pfad}" class="k-modul" shape-rendering="crispEdges"/></svg>`;
 }
-const qr = qrSvg(link.href);
 
-// ---------- Einladung auf dem Startbild ----------
+// ---------- Startbild als Lobby ----------
 const titel = $('#title');
+const startKnopf = $('#start');
 const hinweis = $('.hint', titel);
 if (hinweis) hinweis.textContent = 'Eure Entscheidungen verändern den Film';
+titel.classList.add('k-lobby-an');
 
-const einladung = document.createElement('div');
-einladung.id = 'k-einladung';
-einladung.innerHTML = `
-  <div class="k-qr">${qr}</div>
+const macher = document.createElement('p');
+macher.className = 'k-macher';
+macher.textContent = MACHER;
+$('.sub', titel).after(macher);
+
+const lobby = document.createElement('div');
+lobby.id = 'k-lobby';
+lobby.innerHTML = `
+  <div class="k-eintritt">
+    <div class="k-qr">${qrSvg(link.href)}</div>
+    <div class="k-text">
+      <p class="k-ruf">Entscheidet mit.</p>
+      <p class="k-weg">Kamera auf den Code richten – oder <span class="k-adresse"></span> öffnen und eingeben:</p>
+      <p class="k-code">${codeHtml}</p>
+    </div>
+  </div>
   <div class="k-haar" aria-hidden="true"></div>
-  <div class="k-text">
-    <p class="k-ruf">Entscheidet mit.</p>
-    <p class="k-weg">Kamera auf den Code richten – oder <span class="k-adresse"></span> öffnen und eingeben:</p>
-    <p class="k-code">${codeHtml}</p>
-    <p class="k-dabei"><span class="k-punkte" aria-hidden="true"></span><span class="k-zahl">Noch niemand dabei</span></p>
+  <div class="k-publikum">
+    <div class="k-kopf">
+      <span class="k-roemzahl">–</span>
+      <span class="k-kopftext"><span class="k-spect">Spectatores</span><span class="k-zahl">Noch niemand dabei</span></span>
+    </div>
+    <p class="k-rolle" aria-live="polite"></p>
   </div>`;
-titel.append(einladung);
-$('.k-adresse', einladung).textContent = `${link.host}${link.pathname.replace(/\/waehlen\.html$/, '/waehlen')}`;
+macher.after(lobby);
+lobby.after(hinweis || document.createComment(''));
+(hinweis || lobby).after(startKnopf);
+$('.k-adresse', lobby).textContent = `${link.host}${link.pathname.replace(/\/waehlen\.html$/, '/waehlen')}`;
+
+const rolle = $('.k-rolle', lobby);
+const kachel = new Map();     // id → Element in der Liste
+
+function namensKachel(id, sofort) {
+  if (kachel.has(id)) return;
+  const el = document.createElement('span');
+  el.className = 'k-person k-dreht';
+  el.innerHTML = '<i></i><i></i><i></i>';
+  rolle.append(el);
+  kachel.set(id, el);
+  const zeigen = () => {
+    el.className = 'k-person k-neu';
+    el.textContent = roemisch(vergeben[id] || '');
+    setTimeout(() => el.classList.remove('k-neu'), 2400);
+  };
+  if (sofort) zeigen(); else setTimeout(zeigen, DREH_MS);
+}
+
+function zaehlen() {
+  const n = handys.size;
+  $('.k-roemzahl', lobby).textContent = zahlRoemisch(n);
+  $('.k-zahl', lobby).textContent = n === 0 ? 'Noch niemand dabei' : n === 1 ? '1 ist dabei' : `${n} sind dabei`;
+  const z = $('.k-roemzahl', lobby);
+  z.classList.remove('k-puls'); void z.offsetWidth; z.classList.add('k-puls');
+}
+// Schon bekannte Handys (nach Neuladen) gleich zeigen
+for (const id of Object.keys(vergeben)) namensKachel(id, true);
+zaehlen();
+
+// Credits auch auf dem Endbild
+const endMacher = macher.cloneNode(true);
+$('#end .path').after(endMacher);
 
 // Kleiner Code in der Ecke, solange abgestimmt wird – für Nachzügler
 const ecke = document.createElement('div');
 ecke.id = 'k-ecke';
 ecke.innerHTML = `<div class="k-qr">${qrSvg(link.href, false)}</div><p class="k-code">${codeHtml}</p>`;
 $('#stage').append(ecke);
-
-function dabei() {
-  const n = handys.size;
-  $('.k-zahl', einladung).textContent = n === 0 ? 'Noch niemand dabei' : n === 1 ? '1 ist dabei' : `${n} sind dabei`;
-  const punkte = $('.k-punkte', einladung);
-  while (punkte.children.length < Math.min(n, 36)) {
-    const p = document.createElement('i');
-    punkte.append(p);
-  }
-}
 
 // ---------- Waage für die Abstimmung ----------
 const waage = document.createElement('div');
@@ -113,15 +182,21 @@ $('#stage').append(waage);
 
 // ---------- Nachrichten von den Handys ----------
 function empfang(m) {
-  if (!m || typeof m.id !== 'string') return;
-  if ((m.t === 'da' || m.t === 'stimme') && !handys.has(m.id)) { handys.add(m.id); dabei(); }
+  if (!m || typeof m.id !== 'string' || m.id.length > 40) return;
+  if (m.t === 'da' || m.t === 'stimme') {
+    const neu = !vergeben[m.id];
+    nameFuer(m.id);
+    if (!handys.has(m.id)) { handys.add(m.id); zaehlen(); }
+    namensKachel(m.id, !neu);
+    if (m.t === 'da') namenSenden();
+  }
   if (m.t === 'da' && runde && runde.frist && !runde.entschieden) verbindung.senden(frageNachricht());
   if (m.t === 'stimme' && runde && runde.frist && m.n === runde.n && !runde.entschieden
       && Date.now() <= runde.frist + NACHFRIST
       && Number.isInteger(m.i) && m.i >= 0 && m.i < runde.texte.length) {
     const vorher = runde.stimmen.get(m.id);
     runde.stimmen.set(m.id, m.i);
-    if (vorher !== m.i) funke(m.i);
+    if (vorher !== m.i) funke(m.i, vergeben[m.id]);
     neuZaehlen();
   }
 }
@@ -136,7 +211,8 @@ beobachte(wahl, () => {
   if (sichtbar(wahl) && !runde) starten();
   else if (!sichtbar(wahl) && runde) aufraeumen();
 });
-beobachte(ende, () => { if (sichtbar(ende)) verbindung.senden({ t: 'ende' }); });
+beobachte(ende, () => { if (sichtbar(ende)) verbindung.senden({ t: 'ende' }); lage(); });
+beobachte(titel, () => lage());
 $('#again').addEventListener('click', () => verbindung.senden({ t: 'warten' }));
 
 const beschriftung = (b) => b.lastChild.textContent.trim();
@@ -159,21 +235,19 @@ function starten() {
 
   if (handys.size === 0) return;   // keine Handys: Original-Verhalten
 
-  // Waage aufbauen
   $('.k-frage', waage).textContent = runde.frage;
   $('.k-seiten', waage).innerHTML = runde.texte.map((t, i) => `
     <div class="k-seite" data-i="${i}">
-      <span class="k-roem">${ROEMISCH[i] || i + 1}</span>
+      <span class="k-roem">${ROEM[i] || i + 1}</span>
       <span class="k-option"></span>
       <span class="k-prozent"><b>0</b><small>%</small></span>
     </div>`).join('');
   [...waage.querySelectorAll('.k-option')].forEach((el, i) => { el.textContent = runde.texte[i]; });
   waage.classList.toggle('k-zwei', runde.texte.length === 2);
-  waage.classList.remove('k-fertig', 'k-leer');
+  waage.classList.remove('k-fertig', 'k-leer', 'k-hat');
   $('.k-stand', waage).textContent = 'Noch keine Stimme';
   setzeWaage(0.5, true);
 
-  // Zeitlinie: läuft per CSS-Übergang, also auch ohne JavaScript-Bildtakt flüssig
   const zeit = $('.k-zeit i', waage);
   zeit.style.transition = 'none';
   zeit.style.transform = 'scaleX(1)';
@@ -206,7 +280,7 @@ function neuZaehlen() {
 // Weiche Bewegung: Perle und Prozentzahlen gleiten zum neuen Stand
 function bewegen() {
   const r = runde;
-  if (!r || r.entschieden && !waage.classList.contains('k-an')) return;
+  if (!r || (r.entschieden && !waage.classList.contains('k-an'))) return;
   r.anteil += (r.ziel - r.anteil) * 0.12;
   setzeWaage(r.anteil);
   const gesamt = Math.max(1, r.stimmen.size);
@@ -229,8 +303,8 @@ function setzeWaage(anteil, sofort) {
   if (sofort) { void fuell.offsetWidth; fuell.style.transition = perle.style.transition = ''; }
 }
 
-// Goldfunke: jede neue Stimme fliegt zu ihrer Seite
-function funke(i) {
+// Goldfunke mit Namen: jede neue Stimme fliegt zu ihrer Seite
+function funke(i, name) {
   const ziel = waage.querySelectorAll('.k-prozent')[i];
   if (!ziel || !waage.classList.contains('k-an')) return;
   const z = ziel.getBoundingClientRect();
@@ -241,6 +315,7 @@ function funke(i) {
   const y1 = z.top + z.height / 2;
   const f = document.createElement('i');
   f.className = 'k-funke';
+  if (name) { const s = document.createElement('span'); s.textContent = name; f.append(s); }
   document.body.append(f);
   const mx = (x0 + x1) / 2 + (Math.random() - 0.5) * 120;
   const my = Math.min(y0, y1) - 60 - Math.random() * 80;
@@ -249,7 +324,7 @@ function funke(i) {
     { transform: `translate(${mx}px, ${my}px) scale(1)`, opacity: 1, offset: 0.55 },
     { transform: `translate(${x1}px, ${y1}px) scale(.6)`, opacity: 0.9, offset: 0.92 },
     { transform: `translate(${x1}px, ${y1}px) scale(2.2)`, opacity: 0 },
-  ], { duration: 950 + Math.random() * 250, easing: 'cubic-bezier(.25,.6,.3,1)' });
+  ], { duration: 1100 + Math.random() * 300, easing: 'cubic-bezier(.25,.6,.3,1)' });
   a.onfinish = () => {
     f.remove();
     ziel.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.07)' }, { transform: 'scale(1)' }],
@@ -261,12 +336,12 @@ function auswerten() {
   if (!runde || runde.entschieden) return;
   const r = runde;
   if (r.stimmen.size === 0) {
-    // Niemand hat gestimmt: Waage weg, Original-Knöpfe für vorne
     waage.classList.add('k-leer');
     waage.classList.remove('k-an');
     wahl.classList.remove('k-aktiv');
     wahl.classList.add('k-keine');
     document.body.classList.remove('k-stimmt');
+    lage();
     return;
   }
   const max = Math.max(...r.zahlen);
@@ -296,9 +371,74 @@ function aufraeumen() {
   runde = null;
   clearTimeout(r.zeitgeber);
   cancelAnimationFrame(r.takt);
-  // Per Taste vorne entschieden? Dann die Handys trotzdem zurücksetzen
   if (r.frist && !r.entschieden) verbindung.senden({ t: 'zu', n: r.n, w: -1, o: r.texte });
   waage.classList.remove('k-an');
   document.body.classList.remove('k-stimmt');
   setTimeout(() => wahl.classList.remove('k-aktiv', 'k-keine'), 900);
+  lage();
 }
+
+// ---------- Steuerleiste: vorige Szene, Szene von vorn, Pause ----------
+const ICON = {
+  zurueck: '<svg viewBox="0 0 24 24"><path d="M7 5v14M18 6l-8 6 8 6z"/></svg>',
+  neu: '<svg viewBox="0 0 24 24"><path d="M5.5 12a6.5 6.5 0 1 0 2-4.7"/><path d="M5 4v4h4"/></svg>',
+  pause: '<svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg>',
+  weiter: '<svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg>',
+};
+const steuer = document.createElement('div');
+steuer.id = 'k-steuer';
+steuer.innerHTML = `
+  <button data-a="zurueck" title="Vorige Szene (←)" aria-label="Vorige Szene">${ICON.zurueck}</button>
+  <button data-a="neu" title="Szene von vorn (R)" aria-label="Szene von vorn">${ICON.neu}</button>
+  <button data-a="pause" class="k-gross" title="Pause (P)" aria-label="Pause">${ICON.pause}</button>`;
+$('#stage').append(steuer);
+
+const pausa = document.createElement('div');
+pausa.id = 'k-pausa';
+pausa.innerHTML = '<span class="k-haarlinie"></span><span class="k-wort">PAVSA</span><span class="k-haarlinie"></span><span class="k-tipp">Zum Weiterspielen tippen</span>';
+$('#stage').append(pausa);
+
+const film = () => window.__film;
+function pauseUmschalten() {
+  const f = film();
+  if (!f || runde) return;
+  if (f.pausiert) f.weiter(); else f.pause();
+  lage();
+}
+function aktion(a) {
+  const f = film();
+  if (!f) return;
+  if (a === 'pause') pauseUmschalten();
+  else { f.springe(a); setTimeout(lage, 50); }
+  zeigeSteuer();
+}
+steuer.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { e.stopPropagation(); aktion(b.dataset.a); } });
+pausa.addEventListener('click', () => pauseUmschalten());
+
+function lage() {
+  const imFilm = !sichtbar(titel) && !sichtbar(ende);
+  const f = film();
+  document.body.classList.toggle('k-imfilm', imFilm);
+  document.body.classList.toggle('k-angehalten', !!(f && f.pausiert));
+  const p = $('[data-a="pause"]', steuer);
+  const an = f && f.pausiert;
+  p.innerHTML = an ? ICON.weiter : ICON.pause;
+  p.title = an ? 'Weiter (P)' : 'Pause (P)';
+  p.setAttribute('aria-label', an ? 'Weiter' : 'Pause');
+}
+
+let steuerUhr = 0;
+function zeigeSteuer() {
+  document.body.classList.add('k-zeigsteuer');
+  clearTimeout(steuerUhr);
+  steuerUhr = setTimeout(() => document.body.classList.remove('k-zeigsteuer'), 2800);
+}
+window.addEventListener('pointermove', zeigeSteuer, { passive: true });
+window.addEventListener('pointerdown', zeigeSteuer, { passive: true });
+window.addEventListener('keydown', (e) => {
+  if (!document.body.classList.contains('k-imfilm')) return;
+  if (e.key === 'p' || e.key === 'P' || e.key === 'k' || e.key === 'K') { pauseUmschalten(); zeigeSteuer(); }
+  else if (e.key === 'ArrowLeft') aktion('zurueck');
+  else if (e.key === 'r' || e.key === 'R') aktion('neu');
+});
+lage();

@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#05070a">
 <style>
-  :root { --gold: #d9b877; --elfenbein: #e9e2d4; --leise: #9c9588; --weich: cubic-bezier(.2,.7,.2,1); }
+  :root { --gold: #d9b877; --gold-tief: #8a6f3e; --elfenbein: #e9e2d4; --licht: #f6ecd3; --leise: #9c9588; --weich: cubic-bezier(.2,.7,.2,1); }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; min-height: 100%; background: #05070a; color: var(--elfenbein);
     font-family: 'Cormorant Garamond', Georgia, serif; }
@@ -22,6 +22,8 @@
   header .marke { margin: 6px 0 0; font-size: 22px; letter-spacing: .06em; }
   header .marke span { color: var(--gold); font-style: italic; }
   header .haar { width: 44px; height: 1px; margin: 12px auto 0; background: rgba(217,184,119,.55); }
+  header .ich { margin: 10px 0 0; min-height: 20px; font-size: 15px; letter-spacing: .3em; color: var(--gold); opacity: 0; transition: opacity .8s ease; }
+  header .ich.an { opacity: .9; }
 
   main { flex: 1; display: grid; align-items: center; }
   .ansicht { grid-area: 1 / 1; display: flex; flex-direction: column; text-align: center;
@@ -38,14 +40,45 @@
     border: 1px solid rgba(217,184,119,.28); }
   .kreis i { position: absolute; inset: -4px; animation: kreisen 6s linear infinite; }
   .kreis i::before { content: ''; position: absolute; top: 0; left: 50%; width: 7px; height: 7px; margin-left: -3.5px;
-    border-radius: 50%; background: #f6ecd3; box-shadow: 0 0 12px 3px rgba(217,184,119,.7); }
+    border-radius: 50%; background: var(--licht); box-shadow: 0 0 12px 3px rgba(217,184,119,.7); }
   @keyframes kreisen { to { transform: rotate(360deg); } }
+
+  /* Glücksrad */
+  .rad-titel { margin: 0 0 22px; font-size: 14px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); opacity: .85; }
+  .rad { position: relative; width: min(82vw, 360px); aspect-ratio: 1; margin: 0 auto; }
+  .rad svg.scheibe { width: 100%; height: 100%; display: block; transform: rotate(0deg);
+    filter: drop-shadow(0 18px 40px rgba(0,0,0,.65)); }
+  .rad .zeiger { position: absolute; top: -10px; left: 50%; width: 26px; height: 34px; transform: translateX(-50%); z-index: 2;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,.7)); }
+  .rad .zeiger.tick { animation: tick .14s ease-out; }
+  @keyframes tick { 40% { transform: translateX(-50%) rotate(-9deg); } }
+  .seg-a { fill: #161b21; } .seg-b { fill: #0f1317; }
+  .seg-linie { stroke: rgba(217,184,119,.45); stroke-width: .6; }
+  .seg-text { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 8.4px; letter-spacing: .6px; fill: #e2d9c6; }
+  .rand { fill: none; stroke: var(--gold); stroke-width: 2.2; }
+  .rand-fein { fill: none; stroke: rgba(217,184,119,.5); stroke-width: .5; }
+  .rad .nabe-fest { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .nabe { fill: #0b0d10; stroke: var(--gold); stroke-width: 1.2; }
+  .nabe-text { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 9px; letter-spacing: 1.4px; fill: var(--gold); text-anchor: middle; }
+  .rad-unten { margin: 26px 0 0; font-style: italic; color: var(--leise); font-size: 18px; min-height: 24px; }
+
+  /* Enthüllung des Namens */
+  .du { font-size: 15px; letter-spacing: .34em; text-transform: uppercase; color: var(--leise); }
+  .name { margin: 10px 0 0; font-style: italic; font-size: 54px; line-height: 1; color: var(--licht);
+    text-shadow: 0 0 34px rgba(217,184,119,.45); }
+  .name-roem { margin: 12px 0 0; font-size: 15px; letter-spacing: .42em; color: var(--gold); }
+  .wer { margin: 22px auto 0; max-width: 28ch; font-style: italic; color: var(--leise); font-size: 19px; line-height: 1.45; }
+  .buch { margin: 10px 0 0; font-size: 13px; letter-spacing: .28em; color: rgba(217,184,119,.7); }
+  #v-name.an .name { animation: enthuellen 1.2s var(--weich) both; }
+  #v-name.an .name-roem, #v-name.an .wer, #v-name.an .buch { animation: auf 1s var(--weich) .5s both; }
+  @keyframes enthuellen { from { opacity: 0; transform: scale(.82); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
+  @keyframes auf { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
   /* Frage */
   .zeit { height: 1px; margin: 0 0 30px; background: rgba(217,184,119,.16); }
   .zeit i { display: block; height: 100%; background: var(--gold); transform-origin: center; box-shadow: 0 0 8px rgba(217,184,119,.8); }
   .frage { margin: 0 0 26px; font-style: italic; font-size: 29px; line-height: 1.2; color: var(--gold); }
-  .wahl { display: flex; flex-direction: column; border-top: 1px solid rgba(217,184,119,.28); }
+  .wahl { display: flex; flex-direction: column; border-top: 1px solid rgba(217,184,119,.28); isolation: isolate; }
   .wahl button { position: relative; overflow: hidden; display: flex; align-items: center; gap: 18px; width: 100%;
     min-height: 92px; padding: 18px 6px; text-align: left; font-family: inherit; font-size: 24px; line-height: 1.22;
     color: var(--elfenbein); background: none; border: 0; border-bottom: 1px solid rgba(217,184,119,.28);
@@ -60,9 +93,7 @@
   .wahl button.gewaehlt .roem { background: var(--gold); color: #0b0c0d; border-color: var(--gold); }
   .wahl.zu button:not(.gewaehlt) { opacity: .28; }
   .wahl.zu button { pointer-events: none; }
-  .wahl { isolation: isolate; }
-  .status { min-height: 26px; margin: 22px 0 0; font-style: italic; color: var(--leise); font-size: 19px;
-    transition: color .5s ease; }
+  .status { min-height: 26px; margin: 22px 0 0; font-style: italic; color: var(--leise); font-size: 19px; transition: color .5s ease; }
   .status.gold { color: var(--gold); }
 
   /* Code eingeben */
@@ -84,6 +115,7 @@
 <header>
   <p class="marke">Ceyx <span>&amp;</span> Alcyone</p>
   <div class="haar"></div>
+  <p class="ich" id="ich"></p>
 </header>
 
 <main>
@@ -95,6 +127,30 @@
       <button type="submit">Beitreten</button>
       <div class="fehler" id="codefehler"></div>
     </form>
+  </section>
+
+  <section class="ansicht" id="v-verbinden">
+    <div class="kreis"><i></i></div>
+    <h2>Einen Moment …</h2>
+    <p class="leise">Die Verbindung zum Fernseher wird aufgebaut.</p>
+  </section>
+
+  <section class="ansicht" id="v-rad">
+    <p class="rad-titel">Wer bist du?</p>
+    <div class="rad">
+      <svg class="zeiger" id="zeiger" viewBox="0 0 26 34" aria-hidden="true"><path d="M13 33 L2 6 Q13 -2 24 6 Z" fill="#d9b877" stroke="#6b5530" stroke-width="1"/><circle cx="13" cy="9" r="2.6" fill="#0b0d10"/></svg>
+      <svg class="scheibe" id="scheibe" viewBox="-110 -110 220 220" aria-hidden="true"></svg>
+      <svg class="nabe-fest" viewBox="-110 -110 220 220" aria-hidden="true"><circle r="24" class="nabe"/><text y="3.2" class="nabe-text">OVID</text></svg>
+    </div>
+    <p class="rad-unten" id="rad-unten">Das Rad der Verwandlungen dreht sich …</p>
+  </section>
+
+  <section class="ansicht" id="v-name">
+    <p class="du">Du bist</p>
+    <p class="name" id="name"></p>
+    <p class="name-roem" id="name-roem"></p>
+    <p class="wer" id="wer"></p>
+    <p class="buch" id="buch"></p>
   </section>
 
   <section class="ansicht" id="v-warten">
@@ -117,11 +173,15 @@
 </main>
 <footer id="fuss"></footer>
 
+<script src="vendor/mqtt.min.js"></script>
 <script type="module">
   import { kanal } from './kanal.js';
+  import { NAMEN, roemisch, zahlRoemisch } from './namen.js';
   const $ = (s) => document.querySelector(s);
-  const ROEMISCH = ['I', 'II', 'III', 'IV'];
-  const zeige = (id) => document.querySelectorAll('.ansicht').forEach((v) => v.classList.toggle('an', v.id === id));
+  const ROEM = ['I', 'II', 'III', 'IV'];
+  const DREH_MS = 4300;
+  let ansicht = '';
+  const zeige = (id) => { ansicht = id; document.querySelectorAll('.ansicht').forEach((v) => v.classList.toggle('an', v.id === id)); };
 
   // Anonyme Kennung dieses Handys – nur damit jede Person eine Stimme hat
   let ich = '';
@@ -145,23 +205,115 @@
     beitreten(raum);
   }
 
+  // ---------- Glücksrad ----------
+  function radBauen(zielName) {
+    const N = 12;
+    const andere = NAMEN.map((x) => x.n).filter((n) => n !== zielName).sort(() => Math.random() - 0.5).slice(0, N - 1);
+    const k = Math.floor(Math.random() * N);
+    const feld = [...andere.slice(0, k), zielName, ...andere.slice(k)];
+    const R = 100;
+    const pkt = (grad, r) => { const a = (grad - 90) * Math.PI / 180; return [r * Math.cos(a), r * Math.sin(a)]; };
+    let s = '';
+    for (let i = 0; i < N; i++) {
+      const a0 = i * 360 / N, a1 = (i + 1) * 360 / N;
+      const [x0, y0] = pkt(a0, R), [x1, y1] = pkt(a1, R);
+      s += `<path d="M0 0 L${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} Z" class="${i % 2 ? 'seg-a' : 'seg-b'} seg-linie"/>`;
+      const mitte = (a0 + a1) / 2;
+      const text = feld[i].length > 11 ? `${feld[i].slice(0, 10)}.` : feld[i];
+      s += `<text transform="rotate(${mitte - 90}) translate(91 0)" text-anchor="end" dominant-baseline="middle" class="seg-text">${roemisch(text)}</text>`;
+    }
+    for (let i = 0; i < N; i++) { const [x, y] = pkt(i * 360 / N, R + 4); s += `<circle cx="${x}" cy="${y}" r="1.6" fill="#d9b877"/>`; }
+    s += `<circle r="${R + 4}" class="rand"/><circle r="${R - 1}" class="rand-fein"/>`;
+    $('#scheibe').innerHTML = s;
+    return { k, N };
+  }
+
+  function drehen(zielName) {
+    return new Promise((fertig) => {
+      zeige('v-rad');
+      const { k, N } = radBauen(zielName);
+      const scheibe = $('#scheibe');
+      const mitte = (k + 0.5) * 360 / N;
+      const zufall = (Math.random() - 0.5) * (360 / N) * 0.6;
+      const ziel = 360 * 6 - mitte + zufall;
+      scheibe.style.transition = 'none';
+      scheibe.style.transform = 'rotate(0deg)';
+      void scheibe.getBoundingClientRect();
+      requestAnimationFrame(() => {
+        scheibe.style.transition = `transform ${DREH_MS}ms cubic-bezier(.12,.62,.08,1)`;
+        scheibe.style.transform = `rotate(${ziel}deg)`;
+      });
+      // Zeiger tickt bei jedem Segment
+      const start = performance.now();
+      let letztes = 0;
+      const zeiger = $('#zeiger');
+      const bahn = (t) => { const x = Math.min(1, t); return 1 - Math.pow(1 - x, 3.4); };
+      const takt = () => {
+        const t = (performance.now() - start) / DREH_MS;
+        const seg = Math.floor((bahn(t) * ziel) / (360 / N));
+        if (seg !== letztes) { letztes = seg; zeiger.classList.remove('tick'); void zeiger.offsetWidth; zeiger.classList.add('tick'); }
+        if (t < 1) requestAnimationFrame(takt);
+      };
+      requestAnimationFrame(takt);
+      setTimeout(() => { navigator.vibrate?.([30, 50, 60]); fertig(); }, DREH_MS + 250);
+    });
+  }
+
+  function enthuellen(name) {
+    const info = NAMEN.find((x) => x.n === name.replace(/ [IVXLC]+$/, '')) || { d: '', b: '' };
+    $('#name').textContent = name;
+    $('#name-roem').textContent = roemisch(name);
+    $('#wer').textContent = info.d ? `${info.d.charAt(0).toUpperCase()}${info.d.slice(1)}` : '';
+    $('#buch').textContent = info.b ? `METAMORPHOSES · LIBER ${info.b}` : '';
+    zeige('v-name');
+  }
+
+  // ---------- Verbindung ----------
   function beitreten(raum) {
-    zeige('v-warten');
+    zeige('v-verbinden');
     $('#fuss').textContent = `${raum.slice(0, 3)} ${raum.slice(3)}`;
-    let aktuell = null;   // laufende Frage
+    const merkName = `ceyx_name_${raum}`;
+    let meinName = '';
+    try { meinName = localStorage.getItem(merkName) || ''; } catch {}
+    let namensPhase = !meinName;  // Rad noch nicht gedreht
+    let aktuell = null;
     let gewaehlt = null;
     let ablauf = 0;
+    let wartendeFrage = null;     // Frage, die während des Rads ankam
 
     const verbindung = kanal(raum, empfang, { rueckblick: '20s' });
-    verbindung.senden({ t: 'da', id: ich });
+    const melden = () => verbindung.senden({ t: 'da', id: ich });
+    melden();
+    // Falls die erste Meldung verloren geht: nachfragen, bis ein Name kommt
+    let versuche = 0;
+    const nachfragen = setInterval(() => { if (meinName || versuche++ > 6) clearInterval(nachfragen); else melden(); }, 4000);
+
+    if (meinName) zeigeIch(meinName), zeige('v-warten');
+
+    function zeigeIch(n) { const el = $('#ich'); el.textContent = roemisch(n); el.classList.add('an'); }
+
+    async function nameErhalten(n) {
+      if (meinName === n && !namensPhase) return;
+      meinName = n;
+      try { localStorage.setItem(merkName, n); } catch {}
+      if (!namensPhase) { zeigeIch(n); return; }
+      namensPhase = false;
+      await drehen(n);
+      enthuellen(n);
+      await new Promise((r) => setTimeout(r, 3600));
+      zeigeIch(n);
+      if (wartendeFrage) { const f = wartendeFrage; wartendeFrage = null; frage(f); }
+      else if (ansicht === 'v-name') zeige('v-warten');
+    }
 
     function empfang(m) {
       if (!m || !m.t) return;
-      if (m.t === 'hallo') verbindung.senden({ t: 'da', id: ich });
-      else if (m.t === 'frage') frage(m);
+      if (m.t === 'hallo') melden();
+      else if (m.t === 'namen' && m.m && typeof m.m[ich] === 'string') nameErhalten(m.m[ich]);
+      else if (m.t === 'frage') { if (ansicht === 'v-rad' || ansicht === 'v-name') wartendeFrage = m; else frage(m); }
       else if (m.t === 'zu') entschieden(m);
       else if (m.t === 'ende') { aktuell = null; zeige('v-ende'); }
-      else if (m.t === 'warten') { aktuell = null; zeige('v-warten'); }
+      else if (m.t === 'warten') { aktuell = null; if (meinName) zeige('v-warten'); }
     }
 
     function frage(m) {
@@ -180,12 +332,11 @@
       box.innerHTML = '';
       m.o.forEach((text, i) => {
         const b = document.createElement('button');
-        b.innerHTML = `<span class="roem">${ROEMISCH[i] || i + 1}</span>`;
+        b.innerHTML = `<span class="roem">${ROEM[i] || i + 1}</span>`;
         b.append(text);
         b.onclick = () => stimmen(i, b);
         box.append(b);
       });
-      // Zeitlinie per CSS-Übergang
       const rest = Math.max(0, ende - Date.now());
       const zeit = $('#zeit');
       zeit.style.transition = 'none';
