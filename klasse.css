@@ -192,3 +192,6 @@ body.k-angehalten #k-pausa { opacity: 1; pointer-events: auto; }
 #k-pausa .k-haarlinie { width: clamp(60px, 9vw, 150px); height: 1px; background: rgba(217, 184, 119, .7); }
 #k-pausa .k-tipp { margin-top: 1.4vh; font-style: italic; color: var(--leise); font-size: clamp(13px, 1.05vw, 18px); }
 body.k-angehalten .layer, body.k-angehalten .layer *, body.k-angehalten #grain { animation-play-state: paused !important; }
+
+/* Lenkung: die gewünschte Seite ist eine Spur heller */
+.k-seite.k-warm .k-option { color: var(--licht); }

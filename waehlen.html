@@ -89,6 +89,12 @@
   .wahl button .roem { flex: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center;
     justify-content: center; border: 1px solid rgba(217,184,119,.55); color: var(--gold); font-size: 17px; letter-spacing: .12em;
     transition: background .5s ease, color .5s ease, border-color .5s ease; }
+  /* Lenkung: die gewünschte Möglichkeit mit einem Hauch Gold und einmaligem Aufleuchten */
+  .wahl button.warm { color: var(--licht); background: linear-gradient(90deg, rgba(217,184,119,.10), rgba(217,184,119,0) 75%); }
+  .wahl button.warm .roem { border-color: rgba(217,184,119,.95); box-shadow: 0 0 14px rgba(217,184,119,.35); }
+  .wahl button.warm::after { content: ''; position: absolute; top: 0; bottom: 0; left: -40%; width: 40%; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(246,236,211,.18), transparent); animation: schimmer 1.6s var(--weich) .35s both; }
+  @keyframes schimmer { from { left: -40%; } to { left: 110%; } }
   .wahl button.gewaehlt::before { transform: scaleX(1); }
   .wahl button.gewaehlt .roem { background: var(--gold); color: #0b0c0d; border-color: var(--gold); }
   .wahl.zu button:not(.gewaehlt) { opacity: .28; }
@@ -334,6 +340,7 @@
         const b = document.createElement('button');
         b.innerHTML = `<span class="roem">${ROEM[i] || i + 1}</span>`;
         b.append(text);
+        if (i === m.z) b.classList.add('warm');
         b.onclick = () => stimmen(i, b);
         box.append(b);
       });
