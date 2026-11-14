@@ -213,7 +213,7 @@ async function playScene(id) {
   // Die nächste Szene blendet schon 0,45 s vor Clipende ein – kein Standbild am Ende
   const need = voiceMs ? Math.max(duration - 450, voiceMs + 150) : Math.max(duration - 450, readTime(scene.subtitle));
   if (video.style.display !== 'none' && need > duration) {
-    const rate = Math.max(0.7, duration / need);
+    const rate = Math.max(0.65, duration / need);
     video.playbackRate = rate;
     duration /= rate;
   }

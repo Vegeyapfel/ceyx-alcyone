@@ -160,12 +160,12 @@ async function existsNetz(url) {
   .ersetze('  const voiceMs = scene.subtitle && !synced ? await speak(id) : 0;\n', '  const voiceMs = fruehStimme ? await fruehStimme : (scene.subtitle && !synced ? await speak(id) : 0);\n')
   // 3. Kein langes Standbild: die nächste Szene blendet knapp vor Clipende ein,
   //    Lesezeit zählt nur ohne Sprecher; ist die Stimme länger als der Clip,
-  //    läuft das Video bis auf 70 % verlangsamt weiter.
+  //    läuft das Video bis auf 65 % verlangsamt weiter.
   .ersetze('  const need = Math.max(duration, readTime(scene.subtitle), voiceMs + 600);\n',
     '  // Die nächste Szene blendet schon 0,45 s vor Clipende ein – kein Standbild am Ende\n'
     + '  const need = voiceMs ? Math.max(duration - 450, voiceMs + 150) : Math.max(duration - 450, readTime(scene.subtitle));\n'
     + '  if (video.style.display !== \'none\' && need > duration) {\n'
-    + '    const rate = Math.max(0.7, duration / need);\n'
+    + '    const rate = Math.max(0.65, duration / need);\n'
     + '    video.playbackRate = rate;\n'
     + '    duration /= rate;\n'
     + '  }\n')
