@@ -55,7 +55,7 @@ function namenSenden() {
 }
 setTimeout(() => verbindung.senden({ t: 'hallo' }), 1500);   // nach Neuladen melden sich Handys neu
 
-const link = new URL('waehlen.html', location.href);
+const link = new URL('waehlen', location.href);   // kurze Adresse ohne .html
 link.search = `?r=${code}${LOKAL ? '&lokal=1' : ''}${DIENST !== STANDARD && !LOKAL ? `&dienst=${DIENST}` : ''}`;
 const codeHtml = `${code.slice(0, 3)}<span class="k-luft"></span>${code.slice(3)}`;
 
