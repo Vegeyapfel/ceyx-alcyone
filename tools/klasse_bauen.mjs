@@ -118,6 +118,49 @@ const player = patcher('player.js')
   .ersetze('  const voiceMs = scene.subtitle && !synced ? await speak(id) : 0;\n', '  const voiceMs = scene.subtitle && !synced ? await speak(id) : 0;\n  if (ich !== lauf) return;\n')
   .abschnitt('  // Clip läuft durch;', '  if (synced) duck(false);', (s) => s.split('await wait(').join('await warte(ich, '))
   .ersetze('  subtitle(null);\n  if (scene.end)', '  if (ich !== lauf) return;\n  subtitle(null);\n  if (scene.end)')
+  // ---- Flüssigerer Ablauf (nur Klassenversion) ----
+  // 1. Vorhandene Dateien merken und die nächsten Szenen im Hintergrund vorladen,
+  //    damit zwischen zwei Szenen nicht erst geladen werden muss.
+  .ersetze('async function exists(url) {\n', `const vorhanden = new Map();
+const vorgeladen = new Set();
+function vorladen(scene) {
+  const ziele = [scene.next, ...(scene.next_if || []).map((c) => c.goto), ...((scene.choice && scene.choice.options) || []).map((o) => o.goto)];
+  for (const z of ziele) {
+    if (!z || vorgeladen.has(z)) continue;
+    vorgeladen.add(z);
+    for (const u of [\`clips/\${z}.mp4\`, \`voice_el/\${z}.mp3\`, \`voice/\${z}.mp3\`]) {
+      fetch(u, { priority: 'low' }).then((r) => { vorhanden.set(u, r.ok && !(r.headers.get('content-type') || '').includes('text/html')); return r.blob(); }).catch(() => {});
+    }
+  }
+}
+async function exists(url) {
+  if (vorhanden.has(url)) return vorhanden.get(url);
+  vorhanden.set(url, await existsNetz(url));
+  return vorhanden.get(url);
+}
+async function existsNetz(url) {
+`)
+  .ersetze('  path.push(id);\n', '  path.push(id);\n  vorladen(scene);\n')
+  // 2. Erzählerstimme schon mit der Überblendung starten (außer bei Kapitelkarten)
+  .ersetze('    video.src = clip;\n', '    video.src = clip;\n    video.playbackRate = 1;\n')
+  .ersetze('  // Kapitelkarte liegt über dem Bild; das Bild blendet darunter schon auf.\n  const chapter = showChapter(scene);\n',
+    '  // Klassenversion: ohne Kapitelkarte beginnt die Stimme schon mit der Überblendung\n'
+    + '  const frueh = !scene.chapter && scene.subtitle && !synced;\n'
+    + '  const fruehStimme = frueh ? speak(id) : null;\n'
+    + '  if (frueh) subtitle(scene.subtitle);\n'
+    + '  // Kapitelkarte liegt über dem Bild; das Bild blendet darunter schon auf.\n  const chapter = showChapter(scene);\n')
+  .ersetze('  const voiceMs = scene.subtitle && !synced ? await speak(id) : 0;\n', '  const voiceMs = fruehStimme ? await fruehStimme : (scene.subtitle && !synced ? await speak(id) : 0);\n')
+  // 3. Kein langes Standbild: die nächste Szene blendet knapp vor Clipende ein,
+  //    Lesezeit zählt nur ohne Sprecher; ist die Stimme länger als der Clip,
+  //    läuft das Video bis auf 70 % verlangsamt weiter.
+  .ersetze('  const need = Math.max(duration, readTime(scene.subtitle), voiceMs + 600);\n',
+    '  // Die nächste Szene blendet schon 0,45 s vor Clipende ein – kein Standbild am Ende\n'
+    + '  const need = voiceMs ? Math.max(duration - 450, voiceMs + 150) : Math.max(duration - 450, readTime(scene.subtitle));\n'
+    + '  if (video.style.display !== \'none\' && need > duration) {\n'
+    + '    const rate = Math.max(0.7, duration / need);\n'
+    + '    video.playbackRate = rate;\n'
+    + '    duration /= rate;\n'
+    + '  }\n')
   .text();
 fs.writeFileSync(path.join(dir, 'player_klasse.js'), player);
 

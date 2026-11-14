@@ -119,7 +119,7 @@ abspann.innerHTML = `
   <p class="abspann-zeile">Julian</p>
   <p class="abspann-zusatz">im Vibe-Coding mit KI – Julian gibt Idee und Richtung vor, die KI hilft beim Programmieren und Rendern</p>
   <p class="abspann-rolle">Werkzeuge</p>
-  <p class="abspann-werkzeuge">Claude Code · ComfyUI · Wan 2.2 · Juggernaut XL · Real-ESRGAN · ElevenLabs</p>
+  <p class="abspann-werkzeuge">ComfyUI · Wan 2.2 · Juggernaut XL · Real-ESRGAN · ElevenLabs · Claude Code</p>
   <p class="abspann-quelle">nach Ovid, Metamorphosen XI</p>`;
 $('#end .path').after(abspann);
 

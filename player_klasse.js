@@ -17,7 +17,24 @@ let flags = {};
 let path = [];
 let skip = null;           // Auflöser zum Überspringen der aktuellen Wartezeit
 
+const vorhanden = new Map();
+const vorgeladen = new Set();
+function vorladen(scene) {
+  const ziele = [scene.next, ...(scene.next_if || []).map((c) => c.goto), ...((scene.choice && scene.choice.options) || []).map((o) => o.goto)];
+  for (const z of ziele) {
+    if (!z || vorgeladen.has(z)) continue;
+    vorgeladen.add(z);
+    for (const u of [`clips/${z}.mp4`, `voice_el/${z}.mp3`, `voice/${z}.mp3`]) {
+      fetch(u, { priority: 'low' }).then((r) => { vorhanden.set(u, r.ok && !(r.headers.get('content-type') || '').includes('text/html')); return r.blob(); }).catch(() => {});
+    }
+  }
+}
 async function exists(url) {
+  if (vorhanden.has(url)) return vorhanden.get(url);
+  vorhanden.set(url, await existsNetz(url));
+  return vorhanden.get(url);
+}
+async function existsNetz(url) {
   try { const r = await fetch(url, { method: 'HEAD' }); return r.ok && !(r.headers.get('content-type') || '').includes('text/html'); }
   catch { return false; }
 }
@@ -133,6 +150,7 @@ async function playScene(id) {
   jetzt = id;
   const scene = story.scenes[id];
   path.push(id);
+  vorladen(scene);
   setAmbience((AMBIENCE.find(([p]) => id.startsWith(p)) || [])[1]);
 
   const next = layers[1 - front];
@@ -155,6 +173,7 @@ async function playScene(id) {
 
   if (await exists(clip)) {
     video.src = clip;
+    video.playbackRate = 1;
     video.style.display = '';
     await new Promise((r) => { video.onloadeddata = r; video.onerror = r; video.load(); });
     duration = (video.duration || 5) * 1000;
@@ -167,6 +186,10 @@ async function playScene(id) {
   }
 
   if (ich !== lauf) return;
+  // Klassenversion: ohne Kapitelkarte beginnt die Stimme schon mit der Überblendung
+  const frueh = !scene.chapter && scene.subtitle && !synced;
+  const fruehStimme = frueh ? speak(id) : null;
+  if (frueh) subtitle(scene.subtitle);
   // Kapitelkarte liegt über dem Bild; das Bild blendet darunter schon auf.
   const chapter = showChapter(scene);
   layers[front].classList.remove('on');
@@ -178,12 +201,18 @@ async function playScene(id) {
   if (video.style.display !== 'none') { video.currentTime = 0; video.play().catch(() => {}); }
   subtitle(scene.subtitle);
   if (synced) duck(true);
-  const voiceMs = scene.subtitle && !synced ? await speak(id) : 0;
+  const voiceMs = fruehStimme ? await fruehStimme : (scene.subtitle && !synced ? await speak(id) : 0);
   if (ich !== lauf) return;
 
   // Clip läuft durch; reicht er nicht zum Lesen, bleibt das letzte Bild mit
   // langsamer Fahrt stehen, statt den Untertitel abzuschneiden.
-  const need = Math.max(duration, readTime(scene.subtitle), voiceMs + 600);
+  // Die nächste Szene blendet schon 0,45 s vor Clipende ein – kein Standbild am Ende
+  const need = voiceMs ? Math.max(duration - 450, voiceMs + 150) : Math.max(duration - 450, readTime(scene.subtitle));
+  if (video.style.display !== 'none' && need > duration) {
+    const rate = Math.max(0.7, duration / need);
+    video.playbackRate = rate;
+    duration /= rate;
+  }
   if (video.style.display !== 'none' && need > duration) {
     await warte(ich, duration - 150);
     video.pause();
