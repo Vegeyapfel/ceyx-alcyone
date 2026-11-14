@@ -118,6 +118,14 @@ const player = patcher('player.js')
   .ersetze('  const voiceMs = scene.subtitle && !synced ? await speak(id) : 0;\n', '  const voiceMs = scene.subtitle && !synced ? await speak(id) : 0;\n  if (ich !== lauf) return;\n')
   .abschnitt('  // Clip läuft durch;', '  if (synced) duck(false);', (s) => s.split('await wait(').join('await warte(ich, '))
   .ersetze('  subtitle(null);\n  if (scene.end)', '  if (ich !== lauf) return;\n  subtitle(null);\n  if (scene.end)')
+  // ---- Lateinische Textbezüge (latein.js): Kapitelverse und gesprochene Untertitel ----
+  .ersetze("import { startAudio, setAmbience, duck } from './ambience.js';\n",
+    "import { startAudio, setAmbience, duck } from './ambience.js';\nimport { KAPITEL, GESPROCHEN } from './latein.js';\n")
+  .ersetze("const story = await (await fetch('story.json')).json();\n",
+    "const story = await (await fetch('story.json')).json();\n"
+    + "// Klassenversion: Kapitelverse wörtlich aus dem Unterrichtstext, Untertitel = was der Sprecher sagt\n"
+    + "for (const [id, k] of Object.entries(KAPITEL)) if (story.scenes[id]) story.scenes[id].verse = [`${k.la}  ·  Met. XI, ${k.v}`, k.de];\n"
+    + "for (const [id, t] of Object.entries(GESPROCHEN)) if (story.scenes[id]) story.scenes[id].subtitle = t;\n")
   // ---- Flüssigerer Ablauf (nur Klassenversion) ----
   // 1. Vorhandene Dateien merken und die nächsten Szenen im Hintergrund vorladen,
   //    damit zwischen zwei Szenen nicht erst geladen werden muss.

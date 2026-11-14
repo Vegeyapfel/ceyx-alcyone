@@ -8,6 +8,7 @@
 import { kanal, neuerCode, LOKAL, DIENST, STANDARD } from './kanal.js';
 import { NAMEN, roemisch, zahlRoemisch } from './namen.js';
 import { TAKTIK } from './taktik.js';
+import { TAFELN } from './latein.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const RUNDE_MS = 10000;    // Abstimmzeit (endet früher, sobald alle abgestimmt haben)
@@ -477,6 +478,39 @@ function aufraeumen() {
   setTimeout(() => wahl.classList.remove('k-aktiv', 'k-keine'), 900);
   lage();
 }
+
+// ---------- Lateinische Texttafel oben im Bild (latein.js) ----------
+// Wortlaut, Verse und Übersetzung ausschließlich aus den Unterrichtstexten.
+const tafel = document.createElement('div');
+tafel.id = 'k-latein';
+tafel.innerHTML = '<p class="k-la"></p><p class="k-de"></p><p class="k-quelle"></p>';
+$('#stage').append(tafel);
+let tafelSzene = null;
+let tafelBereit = false;
+let tafelUhr = 0;
+setInterval(() => {
+  const szene = window.__film && window.__film.szene;
+  if (szene !== tafelSzene) {
+    // Neue Szene: Tafel ausblenden, kurz warten, dann neuen Text einsetzen
+    tafelSzene = szene;
+    tafelBereit = false;
+    tafel.classList.remove('k-an');
+    clearTimeout(tafelUhr);
+    const t = TAFELN[szene];
+    if (t) {
+      tafelUhr = setTimeout(() => {
+        $('.k-la', tafel).textContent = t.la;
+        $('.k-de', tafel).textContent = t.de || (t.glossen ? `Vokabelhilfe: ${t.glossen.join(' · ')}` : '');
+        $('.k-de', tafel).classList.toggle('k-glosse', !t.de && !!t.glossen);
+        $('.k-quelle', tafel).textContent = `Ovid, Met. XI, ${t.v}${t.quelle === 'Somnus und Morpheus' ? ' · Somnus und Morpheus' : ''}`;
+        tafelBereit = true;
+      }, 700);
+    }
+    return;
+  }
+  // Sichtbar, solange die Szene läuft – nicht über Kapitelkarte, Startbild oder Endbild
+  tafel.classList.toggle('k-an', tafelBereit && !sichtbar($('#chapter')) && !sichtbar(titel) && !sichtbar(ende));
+}, 200);
 
 // ---------- Steuerleiste: vorige Szene, Szene von vorn, Pause ----------
 const ICON = {

@@ -4,6 +4,7 @@
 // stills/<id>.png mit Ken-Burns-Fahrt gezeigt, fehlt auch das, eine Textkarte.
 
 import { startAudio, setAmbience, duck } from './ambience.js';
+import { KAPITEL, GESPROCHEN } from './latein.js';
 
 const $ = (s) => document.querySelector(s);
 
@@ -11,6 +12,9 @@ const AMBIENCE = [['hafen', 'sea'], ['sturm', 'storm'], ['warten', 'night'], ['t
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const story = await (await fetch('story.json')).json();
+// Klassenversion: Kapitelverse wörtlich aus dem Unterrichtstext, Untertitel = was der Sprecher sagt
+for (const [id, k] of Object.entries(KAPITEL)) if (story.scenes[id]) story.scenes[id].verse = [`${k.la}  ·  Met. XI, ${k.v}`, k.de];
+for (const [id, t] of Object.entries(GESPROCHEN)) if (story.scenes[id]) story.scenes[id].subtitle = t;
 const layers = [$('#layerA'), $('#layerB')];
 let front = 0;
 let flags = {};
