@@ -115,9 +115,10 @@ abspann.innerHTML = `
   <p class="abspann-namen">Max<span>·</span>Henri<span>·</span>Julian</p>
   <p class="abspann-rolle">Präsentation &amp; Inhalte</p>
   <p class="abspann-zeile">Max, Henri und Julian</p>
-  <p class="abspann-rolle">Film, Website &amp; Umsetzung</p>
+  <p class="abspann-rolle">Konzept, Regie &amp; Umsetzung</p>
   <p class="abspann-zeile">Julian</p>
-  <p class="abspann-rolle">Erstellt mit</p>
+  <p class="abspann-zusatz">im Vibe-Coding mit KI – Julian gibt Idee und Richtung vor, die KI hilft beim Programmieren und Rendern</p>
+  <p class="abspann-rolle">Werkzeuge</p>
   <p class="abspann-werkzeuge">Claude Code · ComfyUI · Wan 2.2 · Juggernaut XL · Real-ESRGAN · ElevenLabs</p>
   <p class="abspann-quelle">nach Ovid, Metamorphosen XI</p>`;
 $('#end .path').after(abspann);
