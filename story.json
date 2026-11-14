@@ -14,8 +14,8 @@
     "hafen_1": {
       "chapter": "I · Der Abschied",
       "verse": [
-        "ne me fugiens ventos sequerere rogabam",
-        "Ich bat dich, nicht vor mir fliehend den Winden zu folgen."
+        "et ne me fugiens ventos sequerere rogabam  ·  Met. XI, 695",
+        "… deshalb bat ich, du solltest nicht fliehen und den Winden nicht folgen."
       ],
       "image": "cinematic wide shot of a small deserted ancient greek stone harbour at first light, dark rocky foreground with a mooring post and coiled rope in sharp focus, SCHIFF lying at the quay, nobody on the quay and nobody on board, warm low sun breaking through behind the headland, deep shadows, strong depth, 35mm anamorphic",
       "motion": "the mooring rope slips off the post and falls into the water, the ship slowly glides away from the stone quay, the gap of water widens, its reflection ripples, the pennant stirs at the masthead, nobody is visible, slow steady camera",
@@ -79,8 +79,8 @@
     "sturm_1": {
       "chapter": "II · Der Sturm",
       "verse": [
-        "fluctibus erigitur caelumque aequare videtur",
-        "Die Flut türmt sich und scheint den Himmel zu erreichen."
+        "ecce super medios fluctus niger arcus aquarum frangitur  ·  Met. XI, 568–569",
+        "Sieh, über dem Wasser zerbirst ein schwarzes Gewölbe aus Wogen …"
       ],
       "image": "dramatic low angle shot from the water surface at night, SCHIFF tossed on towering storm waves, the bow lifting out of a massive wave, white foam and spray everywhere, torrential rain, lightning behind, dark stormy sky",
       "motion": "the galley rises over a large wave and slams down into the trough, sea spray bursts over the bow, the torn sail flaps violently, rain streaks sideways, lightning flashes once, realistic heavy water physics, handheld camera slightly shaking",
@@ -135,15 +135,15 @@
     "sturm_welle": {
       "image": "close shot of a drowning bearded man in a soaked red cloak in the black storm sea at night, head and shoulders above the choppy water, arms gripping a broken wooden plank, rain, lightning",
       "motion": "he struggles in the water, arms pulling at the plank, head lifting to breathe, waves lift and drop him, then a dark wall of water rises behind him and collapses over him, he disappears under the churning white foam, handheld camera, realistic heavy water physics",
-      "subtitle": "niger arcus aquarum frangitur et rupta mersum caput obruit unda – Ein schwarzes Gewölbe aus Wogen zerbirst und versenkt seinen Kopf.",
+      "subtitle": "niger arcus aquarum frangitur et rupta mersum caput obruit unda – Ein schwarzer Bogen aus Wasser bricht über ihm zusammen.",
       "next": "warten_1",
       "end_image": "a wall of black storm water and churning white foam filling the frame at night, no person"
     },
     "warten_1": {
       "chapter": "III · Das Warten",
       "verse": [
-        "dinumerat noctes",
-        "Sie zählt die Nächte."
+        "dinumerat noctes  ·  Met. XI, 574",
+        "… zählt indessen die Nächte …"
       ],
       "image": "ALCYONE sitting at a window of a bronze age palace room at dusk looking out at a calm grey sea, oil lamps, warm and cold light mixing",
       "motion": "she gazes at the sea, lamp flames flicker, curtains move slightly, slow push in",
@@ -182,7 +182,7 @@
     "traum_1": {
       "chapter": "IV · Der Traum",
       "verse": [
-        "agnoscis Ceyca, miserrima coniunx?",
+        "agnoscis Ceyca, miserrima coniunx …  ·  Met. XI, 658",
         "Erkennst du Ceyx, du ärmste Gemahlin?"
       ],
       "image": "(erstes Bild von traum_ceyx Fassung a) [Clip: traum_trauer2 – Blick vom Kissen, Ceyx traurig über ihr]",
@@ -213,7 +213,7 @@
     "traum_greifen": {
       "image": "photograph at mattress height of a young greek woman with long dark wavy hair in a simple white linen dress, asleep on her side in a low wooden bed with white linen, facing the camera, her face on the pillow, one arm resting on the sheet, in front of her the other half of the bed is empty, a smooth stretch of white linen and a second empty pillow where her husband should lie, night in a bronze age palace bedchamber, warm dim light from a single oil lamp on the left, white plastered wall and dark wooden ceiling beams in the soft dark background, deep shadows, 35mm, documentary photo, natural skin texture, sharp focus on her face, fine detail [Clip: umarmen2 – sie umarmt im Schlaf die leere Decke]",
       "motion": "she sleeps on her side, then in her sleep she slowly reaches her arm out across the empty half of the bed as if her husband were lying there, her hand finds nothing, she gathers the empty linen and the second pillow and pulls them close to her body, wraps both arms tightly around them and holds them like an embrace, presses her cheek against the empty pillow, her brows draw together in longing, a tear runs from her closed eye, she does not wake, static camera, calm even light",
-      "subtitle": "corpusque petens amplexibus auras – Im Schlaf sucht sie seinen Körper und umarmt nur Luft.",
+      "subtitle": "per somnum corpusque petens amplectitur auras – Im Schlaf sucht sie seinen Körper und umarmt nur Luft.",
       "next": "traum_erwachen",
       "fx": "dream",
       "negative": "man, second person, sitting up, arms spread sideways, t-pose, open eyes, smiling",
@@ -235,7 +235,7 @@
     "ufer_1": {
       "chapter": "V · Der Morgen",
       "verse": [
-        "Mane erat.",
+        "Mane erat.  ·  Met. XI, 710",
         "Es war Morgen."
       ],
       "image": "ALCYONE walking alone along an empty beach at sunrise, golden mist, stone harbour mole in the distance, gentle waves",
@@ -298,8 +298,8 @@
     "mole_1": {
       "chapter": "VI · Die Verwandlung",
       "verse": [
-        "tunc quoque mansit amor",
-        "Auch dann noch blieb die Liebe."
+        "tunc quoque mansit amor  ·  Met. XI, 743",
+        "… blieb ihre Liebe auch jetzt …"
       ],
       "image": "ALCYONE running along a massive ancient stone mole into the sea, dress flowing, morning sun",
       "motion": "she runs along the stone mole, dress and hair flowing, camera tracking alongside",
@@ -315,7 +315,7 @@
     "mole_flug": {
       "image": "a single small common kingfisher bird with bright blue back and orange belly flying low over calm sea water at sunrise, wings spread, close tracking shot",
       "motion": "the kingfisher flies low over the water, wing tips skimming the surface, tracking shot",
-      "subtitle": "stringebat summas undas – Sie streifte die Oberfläche der Wellen.",
+      "subtitle": "stringebat summas ales miserabilis undas – Sie streifte die Oberfläche der Wellen.",
       "next": "mole_zwei"
     },
     "mole_zwei": {
