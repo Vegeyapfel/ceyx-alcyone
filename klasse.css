@@ -37,7 +37,7 @@
 
 /* Die Liste liest sich wie eine Inschrift: Namen in Kapitalen, getrennt durch Mittelpunkte */
 .k-rolle { margin: 0; display: flex; flex-wrap: wrap; align-content: flex-start; column-gap: 0; row-gap: .55em;
-  max-height: 38vh; overflow: hidden; font-size: clamp(16px, 1.75vw, 30px); letter-spacing: .12em; row-gap: .45em; color: var(--elfenbein); }
+  height: 30vh; overflow: hidden; font-size: clamp(16px, 1.75vw, 30px); letter-spacing: .12em; row-gap: .45em; color: var(--elfenbein); }
 .k-person { display: inline-flex; align-items: center; white-space: nowrap; }
 .k-person:not(:last-child)::after { content: '·'; margin: 0 .7em; color: var(--gold); opacity: .7; }
 .k-person { position: relative; }
@@ -53,10 +53,12 @@
   100% { color: var(--elfenbein); text-shadow: none; }
 }
 /* Solange das Rad auf dem Handy dreht: drei atmende Punkte */
-.k-person.k-dreht { gap: 5px; }
-.k-person.k-dreht i { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: k-atem 1.1s ease-in-out infinite; }
-.k-person.k-dreht i:nth-child(2) { animation-delay: .18s; }
-.k-person.k-dreht i:nth-child(3) { animation-delay: .36s; }
+.k-punkte { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; gap: 5px; }
+.k-person.k-dreht .k-n { visibility: hidden; }
+.k-person.k-dreht .k-punkte { display: flex; }
+.k-punkte i { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: k-atem 1.1s ease-in-out infinite; }
+.k-punkte i:nth-child(2) { animation-delay: .18s; }
+.k-punkte i:nth-child(3) { animation-delay: .36s; }
 @keyframes k-atem { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.1); } }
 
 /* Römische Inschriftentafel mit normalem QR-Code */

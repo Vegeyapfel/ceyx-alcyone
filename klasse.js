@@ -134,17 +134,32 @@ $('.k-adresse', lobby).textContent = `${link.host}${link.pathname.replace(/\/wae
 const rolle = $('.k-rolle', lobby);
 const kachel = new Map();     // id → Element in der Liste
 
-/** Platz in der Liste anlegen; bis das Rad auf dem Handy steht, atmen dort drei Punkte. */
+/**
+ * Platz in der Liste anlegen. Der Name steht von Anfang an unsichtbar darin, damit
+ * die Kachel schon ihre endgültige Breite hat – beim Aufdecken rutscht nichts nach.
+ * Bis das Rad auf dem Handy steht, atmen darüber drei Punkte.
+ */
 function namensKachel(id, sofort) {
   if (kachel.has(id)) return;
   const el = document.createElement('span');
-  el.className = 'k-person k-dreht';
-  el.innerHTML = '<i></i><i></i><i></i>';
+  el.className = sofort ? 'k-person' : 'k-person k-dreht';
+  el.innerHTML = '<span class="k-n"></span><span class="k-punkte" aria-hidden="true"><i></i><i></i><i></i></span>';
+  $('.k-n', el).textContent = roemisch(vergeben[id] || '');
   rolle.append(el);
   kachel.set(id, el);
-  if (sofort) { el.className = 'k-person'; el.textContent = roemisch(vergeben[id] || ''); return; }
+  passen();
+  if (sofort) return;
   // Falls die Meldung „gedreht" verloren geht oder jemand nie dreht
   el.notfall = setTimeout(() => enthuellen(id, true), NOTFALL_MS);
+}
+
+/** Schrift der Liste so groß wie möglich, ohne dass sie überläuft. Die Lobby wächst nie. */
+let rollenGroesse = 0;
+function passen() {
+  if (!rollenGroesse) rollenGroesse = parseFloat(getComputedStyle(rolle).fontSize) || 24;
+  let g = rollenGroesse;
+  rolle.style.fontSize = `${g}px`;
+  while (rolle.scrollHeight > rolle.clientHeight + 1 && g > 11) { g -= 1; rolle.style.fontSize = `${g}px`; }
 }
 
 // Große Ankündigung wie bei Kahoot: Name fliegt in die Mitte, dann in seine Lücke.
@@ -156,7 +171,6 @@ function enthuellen(id, still) {
   clearTimeout(el.notfall);
   el.classList.remove('k-dreht');
   el.classList.add('k-wartet');
-  el.textContent = roemisch(vergeben[id] || '');
   if (still || !sichtbar(titel)) { landen(el); return; }
   buehne.push(el);
   if (!buehneLaeuft) naechsteAnkuendigung();
@@ -178,7 +192,7 @@ function naechsteAnkuendigung() {
   const gross = document.createElement('div');
   gross.className = 'k-ansage';
   gross.innerHTML = `<span class="k-ansage-name"></span><span class="k-ansage-zeile">ist dabei</span><i class="k-ring"></i>`;
-  $('.k-ansage-name', gross).textContent = el.textContent;
+  $('.k-ansage-name', gross).textContent = $('.k-n', el).textContent;
   $('#stage').append(gross);
   const halten = eilig ? 450 : 1000;
   const auf = gross.animate([
@@ -188,7 +202,7 @@ function naechsteAnkuendigung() {
   ], { duration: eilig ? 420 : 620, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
   auf.onfinish = () => setTimeout(() => {
     // Flug in die Lücke der Liste
-    const z = el.getBoundingClientRect();
+    const z = $('.k-n', el).getBoundingClientRect();
     const g = $('.k-ansage-name', gross).getBoundingClientRect();
     const dx = z.left + z.width / 2 - (g.left + g.width / 2);
     const dy = z.top + z.height / 2 - (g.top + g.height / 2);

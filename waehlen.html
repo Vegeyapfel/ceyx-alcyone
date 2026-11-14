@@ -71,7 +71,7 @@
   .drehknopf:active { transform: scale(.96); }
   @keyframes lockt { 0%, 100% { box-shadow: 0 10px 30px rgba(217,184,119,.3), inset 0 1px 0 rgba(255,255,255,.6); }
     50% { box-shadow: 0 10px 44px rgba(217,184,119,.7), 0 0 0 8px rgba(217,184,119,.12), inset 0 1px 0 rgba(255,255,255,.6); } }
-  .drehknopf[hidden] { display: none; }
+  .drehknopf.weg { opacity: 0; transform: scale(.92); pointer-events: none; animation: none; }
   /* Goldfunken beim Landen */
   .funken { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
   .funken i { position: absolute; width: 8px; height: 8px; border-radius: 50%; left: 0; top: 0;
@@ -255,7 +255,7 @@
       s += `<path d="M0 0 L${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} Z" class="${i % 2 ? 'seg-a' : 'seg-b'} seg-linie" data-i="${i}"/>`;
       const mitte = (a0 + a1) / 2;
       const text = feld[i].length > 11 ? `${feld[i].slice(0, 10)}.` : feld[i];
-      s += `<text transform="rotate(${mitte - 90}) translate(91 0)" text-anchor="end" dominant-baseline="middle" class="seg-text" data-i="${i}">${roemisch(text)}</text>`;
+      s += `<text transform="rotate(${mitte - 90}) translate(91 0)" text-anchor="end" dominant-baseline="middle" class="seg-text" data-i="${i}"${text.length > 9 ? ' style="font-size:7px"' : ''}>${roemisch(text)}</text>`;
     }
     for (let i = 0; i < N * 2; i++) {
       const [x, y] = pkt(i * 360 / (N * 2), R + 4);
@@ -276,13 +276,13 @@
       const knopf = $('#drehknopf');
       scheibe.style.transition = 'none';
       scheibe.style.transform = 'rotate(0deg)';
-      knopf.hidden = false;
+      knopf.classList.remove('weg');
       $('#rad-unten').textContent = 'Tippe aufs Rad – wer wirst du?';
       let los = false;
       const start = () => {
         if (los) return;
         los = true;
-        knopf.hidden = true;
+        knopf.classList.add('weg');
         $('#rad-unten').textContent = 'Das Rad der Verwandlungen dreht sich …';
         navigator.vibrate?.(12);
         const mitte = (k + 0.5) * 360 / N;
