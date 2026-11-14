@@ -10,7 +10,7 @@ import { NAMEN, roemisch, zahlRoemisch } from './namen.js';
 import { TAKTIK } from './taktik.js';
 
 const $ = (s, el = document) => el.querySelector(s);
-const RUNDE_MS = 12000;    // Abstimmzeit (endet früher, sobald alle abgestimmt haben)
+const RUNDE_MS = 10000;    // Abstimmzeit (endet früher, sobald alle abgestimmt haben)
 const NACHFRIST = 700;     // Stimmen, die noch unterwegs waren
 const ZEIGEN_MS = 1700;    // so lange steht das Ergebnis, bevor der Film weiterläuft
 const NOTFALL_MS = 60000;  // zeigt den Namen spätestens nach einer Minute, auch wenn das Handy nie dreht
