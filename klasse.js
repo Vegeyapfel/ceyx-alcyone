@@ -13,7 +13,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const RUNDE_MS = 5000;     // Abstimmzeit
 const NACHFRIST = 700;     // Stimmen, die noch unterwegs waren
 const ZEIGEN_MS = 1700;    // so lange steht das Ergebnis, bevor der Film weiterläuft
-const DREH_MS = 5000;      // so lange dreht das Glücksrad auf dem Handy, bis der Name vorne erscheint
+const NOTFALL_MS = 60000;  // zeigt den Namen spätestens nach einer Minute, auch wenn das Handy nie dreht
 const ROEM = ['I', 'II', 'III', 'IV'];
 const MACHER = 'Ein Film von Max, Henri und Julian';
 
@@ -134,6 +134,7 @@ $('.k-adresse', lobby).textContent = `${link.host}${link.pathname.replace(/\/wae
 const rolle = $('.k-rolle', lobby);
 const kachel = new Map();     // id → Element in der Liste
 
+/** Platz in der Liste anlegen; bis das Rad auf dem Handy steht, atmen dort drei Punkte. */
 function namensKachel(id, sofort) {
   if (kachel.has(id)) return;
   const el = document.createElement('span');
@@ -141,12 +142,65 @@ function namensKachel(id, sofort) {
   el.innerHTML = '<i></i><i></i><i></i>';
   rolle.append(el);
   kachel.set(id, el);
-  const zeigen = () => {
-    el.className = 'k-person k-neu';
-    el.textContent = roemisch(vergeben[id] || '');
-    setTimeout(() => el.classList.remove('k-neu'), 2400);
-  };
-  if (sofort) zeigen(); else setTimeout(zeigen, DREH_MS);
+  if (sofort) { el.className = 'k-person'; el.textContent = roemisch(vergeben[id] || ''); return; }
+  // Falls die Meldung „gedreht" verloren geht oder jemand nie dreht
+  el.notfall = setTimeout(() => enthuellen(id, true), NOTFALL_MS);
+}
+
+// Große Ankündigung wie bei Kahoot: Name fliegt in die Mitte, dann in seine Lücke.
+const buehne = [];
+let buehneLaeuft = false;
+function enthuellen(id, still) {
+  const el = kachel.get(id);
+  if (!el || !el.classList.contains('k-dreht')) return;
+  clearTimeout(el.notfall);
+  el.classList.remove('k-dreht');
+  el.classList.add('k-wartet');
+  el.textContent = roemisch(vergeben[id] || '');
+  if (still || !sichtbar(titel)) { landen(el); return; }
+  buehne.push(el);
+  if (!buehneLaeuft) naechsteAnkuendigung();
+}
+
+function landen(el) {
+  el.classList.remove('k-wartet');
+  el.classList.add('k-neu');
+  setTimeout(() => el.classList.remove('k-neu'), 2600);
+}
+
+function naechsteAnkuendigung() {
+  // Stau (viele drehen gleichzeitig): ältere landen sofort, nur die neuesten werden groß angesagt
+  while (buehne.length > 4) landen(buehne.shift());
+  const el = buehne.shift();
+  if (!el) { buehneLaeuft = false; return; }
+  buehneLaeuft = true;
+  const eilig = buehne.length >= 3;          // viele gleichzeitig: schneller nacheinander
+  const gross = document.createElement('div');
+  gross.className = 'k-ansage';
+  gross.innerHTML = `<span class="k-ansage-name"></span><span class="k-ansage-zeile">ist dabei</span><i class="k-ring"></i>`;
+  $('.k-ansage-name', gross).textContent = el.textContent;
+  $('#stage').append(gross);
+  const halten = eilig ? 450 : 1000;
+  const auf = gross.animate([
+    { transform: 'translate(-50%, -50%) scale(.2)', opacity: 0, filter: 'blur(14px)' },
+    { transform: 'translate(-50%, -50%) scale(1.12)', opacity: 1, filter: 'blur(0)', offset: 0.6 },
+    { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, filter: 'blur(0)' },
+  ], { duration: eilig ? 420 : 620, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
+  auf.onfinish = () => setTimeout(() => {
+    // Flug in die Lücke der Liste
+    const z = el.getBoundingClientRect();
+    const g = $('.k-ansage-name', gross).getBoundingClientRect();
+    const dx = z.left + z.width / 2 - (g.left + g.width / 2);
+    const dy = z.top + z.height / 2 - (g.top + g.height / 2);
+    const s = Math.max(0.12, z.height / Math.max(1, g.height));
+    $('.k-ansage-zeile', gross).animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: 'forwards' });
+    const flug = gross.animate([
+      { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+      { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${s})`, opacity: 0.9 },
+    ], { duration: eilig ? 480 : 650, easing: 'cubic-bezier(.6,0,.3,1)', fill: 'forwards' });
+    flug.onfinish = () => { gross.remove(); landen(el); };
+    setTimeout(naechsteAnkuendigung, eilig ? 300 : 450);
+  }, halten);
 }
 
 function zaehlen() {
@@ -190,6 +244,10 @@ function empfang(m) {
     if (!handys.has(m.id)) { handys.add(m.id); zaehlen(); }
     namensKachel(m.id, !neu);
     if (m.t === 'da') namenSenden();
+  }
+  if (m.t === 'gedreht' && vergeben[m.id]) {
+    if (!kachel.has(m.id)) { handys.add(m.id); zaehlen(); namensKachel(m.id); }
+    enthuellen(m.id);
   }
   if (m.t === 'da' && runde && runde.frist && !runde.entschieden) verbindung.senden(frageNachricht());
   if (m.t === 'stimme' && runde && runde.frist && m.n === runde.n && !runde.entschieden

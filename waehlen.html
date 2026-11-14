@@ -45,13 +45,38 @@
 
   /* Glücksrad */
   .rad-titel { margin: 0 0 22px; font-size: 14px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); opacity: .85; }
-  .rad { position: relative; width: min(82vw, 360px); aspect-ratio: 1; margin: 0 auto; }
+  .rad { position: relative; width: min(92vw, 460px); aspect-ratio: 1; margin: 0 auto; cursor: pointer; touch-action: manipulation; }
   .rad svg.scheibe { width: 100%; height: 100%; display: block; transform: rotate(0deg);
-    filter: drop-shadow(0 18px 40px rgba(0,0,0,.65)); }
-  .rad .zeiger { position: absolute; top: -10px; left: 50%; width: 26px; height: 34px; transform: translateX(-50%); z-index: 2;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,.7)); }
+    filter: drop-shadow(0 18px 40px rgba(0,0,0,.65)); transition: filter .6s ease; }
+  .rad.gelandet svg.scheibe { filter: drop-shadow(0 0 26px rgba(217,184,119,.55)) drop-shadow(0 18px 40px rgba(0,0,0,.65)); }
+  .rad .zeiger { position: absolute; top: -14px; left: 50%; width: 34px; height: 44px; transform: translateX(-50%); z-index: 2;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,.7)); transform-origin: 50% 20%; }
   .rad .zeiger.tick { animation: tick .14s ease-out; }
-  @keyframes tick { 40% { transform: translateX(-50%) rotate(-9deg); } }
+  @keyframes tick { 40% { transform: translateX(-50%) rotate(-11deg); } }
+  .rad.gelandet .zeiger { animation: zeigerSieg .7s cubic-bezier(.3,1.8,.5,1); }
+  @keyframes zeigerSieg { 30% { transform: translateX(-50%) scale(1.25); } }
+  /* Lauflichter am Rand: im Leerlauf ruhig, beim Drehen schnell */
+  .licht { fill: #d9b877; animation: lauflicht 1.6s ease-in-out infinite; }
+  .rad.dreht .licht { animation-duration: .45s; }
+  .rad.gelandet .licht { animation: aufblitzen .5s ease-in-out 3; }
+  @keyframes lauflicht { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+  @keyframes aufblitzen { 50% { opacity: 1; fill: #fff6dc; } }
+  .seg-sieger { fill: url(#goldfeld) !important; }
+  .seg-text.sieger { fill: #1a140b; font-weight: 600; }
+  /* Großer Knopf zum Selberdrehen */
+  .drehknopf { display: block; margin: 30px auto 0; min-width: 230px; padding: 18px 34px; border-radius: 999px; border: 0;
+    font-family: inherit; font-size: 24px; letter-spacing: .22em; text-transform: uppercase; color: #15100a; cursor: pointer;
+    background: linear-gradient(180deg, #f1dca6, #d9b877 55%, #b8945a); box-shadow: 0 10px 30px rgba(217,184,119,.35), inset 0 1px 0 rgba(255,255,255,.6);
+    animation: lockt 1.8s ease-in-out infinite; transition: opacity .4s ease, transform .2s ease; }
+  .drehknopf:active { transform: scale(.96); }
+  @keyframes lockt { 0%, 100% { box-shadow: 0 10px 30px rgba(217,184,119,.3), inset 0 1px 0 rgba(255,255,255,.6); }
+    50% { box-shadow: 0 10px 44px rgba(217,184,119,.7), 0 0 0 8px rgba(217,184,119,.12), inset 0 1px 0 rgba(255,255,255,.6); } }
+  .drehknopf[hidden] { display: none; }
+  /* Goldfunken beim Landen */
+  .funken { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+  .funken i { position: absolute; width: 8px; height: 8px; border-radius: 50%; left: 0; top: 0;
+    background: radial-gradient(circle, #fff8e6 0%, #d9b877 55%, rgba(217,184,119,0) 72%); box-shadow: 0 0 10px 3px rgba(217,184,119,.55); }
+  .funken i.blatt { width: 7px; height: 12px; border-radius: 1px; background: linear-gradient(#f1dca6, #b8945a); box-shadow: none; }
   .seg-a { fill: #161b21; } .seg-b { fill: #0f1317; }
   .seg-linie { stroke: rgba(217,184,119,.45); stroke-width: .6; }
   .seg-text { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 8.4px; letter-spacing: .6px; fill: #e2d9c6; }
@@ -148,7 +173,8 @@
       <svg class="scheibe" id="scheibe" viewBox="-110 -110 220 220" aria-hidden="true"></svg>
       <svg class="nabe-fest" viewBox="-110 -110 220 220" aria-hidden="true"><circle r="24" class="nabe"/><text y="3.2" class="nabe-text">OVID</text></svg>
     </div>
-    <p class="rad-unten" id="rad-unten">Das Rad der Verwandlungen dreht sich …</p>
+    <button class="drehknopf" id="drehknopf" type="button">Drehen</button>
+    <p class="rad-unten" id="rad-unten">Tippe aufs Rad – wer wirst du?</p>
   </section>
 
   <section class="ansicht" id="v-name">
@@ -185,7 +211,7 @@
   import { NAMEN, roemisch, zahlRoemisch } from './namen.js';
   const $ = (s) => document.querySelector(s);
   const ROEM = ['I', 'II', 'III', 'IV'];
-  const DREH_MS = 4300;
+  const DREH_MS = 5200;
   let ansicht = '';
   const zeige = (id) => { ansicht = id; document.querySelectorAll('.ansicht').forEach((v) => v.classList.toggle('an', v.id === id)); };
 
@@ -214,55 +240,112 @@
   // ---------- Glücksrad ----------
   function radBauen(zielName) {
     const N = 12;
+    const rad = document.querySelector('.rad');
+    rad.classList.remove('dreht', 'gelandet');
     const andere = NAMEN.map((x) => x.n).filter((n) => n !== zielName).sort(() => Math.random() - 0.5).slice(0, N - 1);
     const k = Math.floor(Math.random() * N);
     const feld = [...andere.slice(0, k), zielName, ...andere.slice(k)];
     const R = 100;
     const pkt = (grad, r) => { const a = (grad - 90) * Math.PI / 180; return [r * Math.cos(a), r * Math.sin(a)]; };
-    let s = '';
+    let s = '<defs><radialGradient id="goldfeld" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse">'
+      + '<stop offset=".2" stop-color="#8a6f3e"/><stop offset=".75" stop-color="#e4c98c"/><stop offset="1" stop-color="#f6ecd3"/></radialGradient></defs>';
     for (let i = 0; i < N; i++) {
       const a0 = i * 360 / N, a1 = (i + 1) * 360 / N;
       const [x0, y0] = pkt(a0, R), [x1, y1] = pkt(a1, R);
-      s += `<path d="M0 0 L${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} Z" class="${i % 2 ? 'seg-a' : 'seg-b'} seg-linie"/>`;
+      s += `<path d="M0 0 L${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} Z" class="${i % 2 ? 'seg-a' : 'seg-b'} seg-linie" data-i="${i}"/>`;
       const mitte = (a0 + a1) / 2;
       const text = feld[i].length > 11 ? `${feld[i].slice(0, 10)}.` : feld[i];
-      s += `<text transform="rotate(${mitte - 90}) translate(91 0)" text-anchor="end" dominant-baseline="middle" class="seg-text">${roemisch(text)}</text>`;
+      s += `<text transform="rotate(${mitte - 90}) translate(91 0)" text-anchor="end" dominant-baseline="middle" class="seg-text" data-i="${i}">${roemisch(text)}</text>`;
     }
-    for (let i = 0; i < N; i++) { const [x, y] = pkt(i * 360 / N, R + 4); s += `<circle cx="${x}" cy="${y}" r="1.6" fill="#d9b877"/>`; }
+    for (let i = 0; i < N * 2; i++) {
+      const [x, y] = pkt(i * 360 / (N * 2), R + 4);
+      s += `<circle cx="${x}" cy="${y}" r="1.7" class="licht" style="animation-delay:${(i * 0.067).toFixed(2)}s"/>`;
+    }
     s += `<circle r="${R + 4}" class="rand"/><circle r="${R - 1}" class="rand-fein"/>`;
     $('#scheibe').innerHTML = s;
     return { k, N };
   }
 
+  /** Zeigt das Rad und wartet, bis die Person selbst dreht. Löst auf, wenn es gelandet ist. */
   function drehen(zielName) {
     return new Promise((fertig) => {
       zeige('v-rad');
       const { k, N } = radBauen(zielName);
+      const rad = document.querySelector('.rad');
       const scheibe = $('#scheibe');
-      const mitte = (k + 0.5) * 360 / N;
-      const zufall = (Math.random() - 0.5) * (360 / N) * 0.6;
-      const ziel = 360 * 6 - mitte + zufall;
+      const knopf = $('#drehknopf');
       scheibe.style.transition = 'none';
       scheibe.style.transform = 'rotate(0deg)';
-      void scheibe.getBoundingClientRect();
-      requestAnimationFrame(() => {
-        scheibe.style.transition = `transform ${DREH_MS}ms cubic-bezier(.12,.62,.08,1)`;
-        scheibe.style.transform = `rotate(${ziel}deg)`;
-      });
-      // Zeiger tickt bei jedem Segment
-      const start = performance.now();
-      let letztes = 0;
-      const zeiger = $('#zeiger');
-      const bahn = (t) => { const x = Math.min(1, t); return 1 - Math.pow(1 - x, 3.4); };
-      const takt = () => {
-        const t = (performance.now() - start) / DREH_MS;
-        const seg = Math.floor((bahn(t) * ziel) / (360 / N));
-        if (seg !== letztes) { letztes = seg; zeiger.classList.remove('tick'); void zeiger.offsetWidth; zeiger.classList.add('tick'); }
-        if (t < 1) requestAnimationFrame(takt);
+      knopf.hidden = false;
+      $('#rad-unten').textContent = 'Tippe aufs Rad – wer wirst du?';
+      let los = false;
+      const start = () => {
+        if (los) return;
+        los = true;
+        knopf.hidden = true;
+        $('#rad-unten').textContent = 'Das Rad der Verwandlungen dreht sich …';
+        navigator.vibrate?.(12);
+        const mitte = (k + 0.5) * 360 / N;
+        const zufall = (Math.random() - 0.5) * (360 / N) * 0.6;
+        const ziel = 360 * 7 - mitte + zufall;
+        // Schwung holen: kurz zurück, dann los
+        scheibe.style.transition = 'transform 420ms cubic-bezier(.4,0,.6,1)';
+        scheibe.style.transform = 'rotate(-16deg)';
+        setTimeout(() => {
+          rad.classList.add('dreht');
+          scheibe.style.transition = `transform ${DREH_MS}ms cubic-bezier(.1,.62,.06,1)`;
+          scheibe.style.transform = `rotate(${ziel}deg)`;
+          // Zeiger tickt bei jedem Segment
+          const t0 = performance.now();
+          let letztes = 0;
+          const zeiger = $('#zeiger');
+          const bahn = (t) => { const x = Math.min(1, t); return 1 - Math.pow(1 - x, 3.6); };
+          const takt = () => {
+            const t = (performance.now() - t0) / DREH_MS;
+            const seg = Math.floor((-16 + bahn(t) * (ziel + 16)) / (360 / N));
+            if (seg !== letztes) { letztes = seg; zeiger.classList.remove('tick'); void zeiger.offsetWidth; zeiger.classList.add('tick'); }
+            if (t < 1) requestAnimationFrame(takt);
+          };
+          requestAnimationFrame(takt);
+          setTimeout(() => {
+            rad.classList.remove('dreht');
+            rad.classList.add('gelandet');
+            scheibe.querySelectorAll(`[data-i="${k}"]`).forEach((el) => el.classList.add(el.tagName === 'text' ? 'sieger' : 'seg-sieger'));
+            $('#rad-unten').textContent = '';
+            navigator.vibrate?.([40, 60, 90]);
+            funkenRegen($('#zeiger'));
+            setTimeout(fertig, 1500);
+          }, DREH_MS + 80);
+        }, 430);
       };
-      requestAnimationFrame(takt);
-      setTimeout(() => { navigator.vibrate?.([30, 50, 60]); fertig(); }, DREH_MS + 250);
+      rad.onclick = start;
+      knopf.onclick = start;
     });
+  }
+
+  /** Goldfunken und Goldblätter sprühen vom Zeiger aus. */
+  function funkenRegen(von) {
+    const r = von.getBoundingClientRect();
+    const x0 = r.left + r.width / 2, y0 = r.top + r.height * 0.6;
+    const ebene = document.createElement('div');
+    ebene.className = 'funken';
+    document.body.append(ebene);
+    for (let i = 0; i < 46; i++) {
+      const f = document.createElement('i');
+      if (i % 3 === 0) f.className = 'blatt';
+      ebene.append(f);
+      const winkel = (-90 + (Math.random() - 0.5) * 230) * Math.PI / 180;
+      const weite = 90 + Math.random() * 230;
+      const x1 = x0 + Math.cos(winkel) * weite, y1 = y0 + Math.sin(winkel) * weite;
+      const x2 = x1 + (Math.random() - 0.5) * 60, y2 = y1 + 220 + Math.random() * 180;
+      const dreh = (Math.random() - 0.5) * 720;
+      f.animate([
+        { transform: `translate(${x0}px, ${y0}px) scale(.3) rotate(0deg)`, opacity: 1 },
+        { transform: `translate(${x1}px, ${y1}px) scale(1) rotate(${dreh / 2}deg)`, opacity: 1, offset: 0.35 },
+        { transform: `translate(${x2}px, ${y2}px) scale(.6) rotate(${dreh}deg)`, opacity: 0 },
+      ], { duration: 1500 + Math.random() * 900, easing: 'cubic-bezier(.2,.7,.4,1)', fill: 'forwards' });
+    }
+    setTimeout(() => ebene.remove(), 2600);
   }
 
   function enthuellen(name) {
@@ -305,6 +388,7 @@
       if (!namensPhase) { zeigeIch(n); return; }
       namensPhase = false;
       await drehen(n);
+      verbindung.senden({ t: 'gedreht', id: ich });   // jetzt erscheint der Name vorne
       enthuellen(n);
       await new Promise((r) => setTimeout(r, 3600));
       zeigeIch(n);
