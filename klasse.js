@@ -10,7 +10,7 @@ import { NAMEN, roemisch, zahlRoemisch } from './namen.js';
 import { TAKTIK } from './taktik.js';
 
 const $ = (s, el = document) => el.querySelector(s);
-const RUNDE_MS = 5000;     // Abstimmzeit
+const RUNDE_MS = 12000;    // Abstimmzeit (endet früher, sobald alle abgestimmt haben)
 const NACHFRIST = 700;     // Stimmen, die noch unterwegs waren
 const ZEIGEN_MS = 1700;    // so lange steht das Ergebnis, bevor der Film weiterläuft
 const NOTFALL_MS = 60000;  // zeigt den Namen spätestens nach einer Minute, auch wenn das Handy nie dreht
@@ -284,6 +284,14 @@ function empfang(m) {
     runde.stimmen.set(m.id, m.i);
     if (vorher !== m.i) funke(m.i, vergeben[m.id]);
     neuZaehlen();
+    // Alle haben abgestimmt: nicht auf den Ablauf der Zeit warten
+    if (runde.stimmen.size >= handys.size && !runde.alleDa) {
+      runde.alleDa = true;
+      clearTimeout(runde.zeitgeber);
+      const diese = runde;
+      runde.zeitgeber = setTimeout(() => runde === diese && auswerten(), 1600);
+      $('.k-stand', waage).textContent = 'Alle haben abgestimmt';
+    }
   }
 }
 
