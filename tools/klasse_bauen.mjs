@@ -34,6 +34,9 @@ function patcher(datei) {
 // ---------- klasse.html ----------
 const html = patcher('index.html')
   .ersetze('<!doctype html>', '<!doctype html>\n<!-- ERZEUGT aus index.html durch tools/klasse_bauen.mjs – nicht von Hand ändern. -->')
+  // Eigenes App-Profil: das Symbol auf dem Home-Bildschirm öffnet die Klassenversion im Vollbild
+  .ersetze('<link rel="manifest" href="manifest.webmanifest">', '<link rel="manifest" href="klasse.webmanifest">')
+  .ersetze('<meta name="apple-mobile-web-app-title" content="Ceyx &amp; Alcyone">', '<meta name="apple-mobile-web-app-title" content="Ceyx Klasse">')
   .ersetze('<link rel="stylesheet" href="player.css">', '<link rel="stylesheet" href="player.css">\n<link rel="stylesheet" href="klasse.css">\n<link rel="stylesheet" href="abspann.css">')
   .ersetze('<script type="module" src="player.js"></script>',
     '<script src="vendor/qrcode.js"></script>\n  <script src="vendor/mqtt.min.js"></script>\n  <script type="module" src="player_klasse.js"></script>\n  <script type="module" src="klasse.js"></script>')

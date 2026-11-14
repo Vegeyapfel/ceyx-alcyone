@@ -1,0 +1,12 @@
+{
+  "id": "/klasse",
+  "name": "Ceyx & Alcyone · Klasse",
+  "short_name": "Ceyx Klasse",
+  "description": "Ein interaktiver Film nach Ovid – die Klasse entscheidet mit",
+  "start_url": "/klasse",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#05070a",
+  "theme_color": "#05070a"
+}
