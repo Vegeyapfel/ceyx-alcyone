@@ -1,0 +1,28 @@
+/* Nennung der Macher – nur in der Klassenversion (über tools/klasse_bauen.mjs eingebunden). */
+
+/* Startbild: alle drei gemeinsam */
+.credits-alle { margin: 1.3vh 0 0; font-size: clamp(12px, 1.05vw, 17px); letter-spacing: .26em; text-transform: uppercase;
+  color: #d9b877; opacity: .85; }
+
+/* Abspann auf dem Endbild: Zeile für Zeile, wie im Kino */
+.abspann { display: flex; flex-direction: column; align-items: center; margin: 0 0 4vh; text-align: center; }
+.abspann-rolle { margin: 2.2vh 0 .5vh; font-size: clamp(10px, .85vw, 14px); letter-spacing: .32em; text-transform: uppercase; color: #8f897d; }
+.abspann-rolle:first-child { margin-top: 0; }
+.abspann-namen { margin: 0; font-size: clamp(24px, 2.8vw, 46px); letter-spacing: .22em; text-indent: .22em; text-transform: uppercase;
+  color: #e9e2d4; text-shadow: 0 0 30px rgba(217, 184, 119, .3); }
+.abspann-namen span { color: #d9b877; margin: 0 .35em; }
+.abspann-zeile { margin: 0; font-size: clamp(15px, 1.4vw, 23px); letter-spacing: .06em; color: #d9b877; }
+.abspann-werkzeuge { margin: 0; max-width: 70vw; font-size: clamp(12px, 1.05vw, 17px); letter-spacing: .1em; color: #b9b1a2; line-height: 1.6; }
+.abspann-quelle { margin: 2.8vh 0 0; font-style: italic; font-size: clamp(12px, 1vw, 16px); color: #7d776c; }
+#end:not(.hidden) .abspann > * { animation: abspann-auf 1.4s cubic-bezier(.2, .7, .2, 1) both; }
+#end:not(.hidden) .abspann > :nth-child(1) { animation-delay: .6s; }
+#end:not(.hidden) .abspann > :nth-child(2) { animation-delay: .9s; }
+#end:not(.hidden) .abspann > :nth-child(3) { animation-delay: 1.8s; }
+#end:not(.hidden) .abspann > :nth-child(4) { animation-delay: 2.0s; }
+#end:not(.hidden) .abspann > :nth-child(5) { animation-delay: 2.7s; }
+#end:not(.hidden) .abspann > :nth-child(6) { animation-delay: 2.9s; }
+#end:not(.hidden) .abspann > :nth-child(7) { animation-delay: 3.6s; }
+#end:not(.hidden) .abspann > :nth-child(8) { animation-delay: 3.8s; }
+#end:not(.hidden) .abspann > :nth-child(9) { animation-delay: 4.6s; }
+@keyframes abspann-auf { from { opacity: 0; transform: translateY(10px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { #end:not(.hidden) .abspann > * { animation: none; } }

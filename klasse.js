@@ -15,7 +15,6 @@ const NACHFRIST = 700;     // Stimmen, die noch unterwegs waren
 const ZEIGEN_MS = 1700;    // so lange steht das Ergebnis, bevor der Film weiterläuft
 const NOTFALL_MS = 60000;  // zeigt den Namen spätestens nach einer Minute, auch wenn das Handy nie dreht
 const ROEM = ['I', 'II', 'III', 'IV'];
-const MACHER = 'Ein Film von Max, Henri und Julian';
 
 // ---------- Raum und Namen ----------
 const merke = (k, v) => { try { sessionStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v)); } catch { /* privat */ } };
@@ -102,10 +101,26 @@ const hinweis = $('.hint', titel);
 if (hinweis) hinweis.textContent = 'Eure Entscheidungen verändern den Film';
 titel.classList.add('k-lobby-an');
 
+// Gemeinsame Nennung unter dem Titel; die Rollen stehen im Abspann (abspann.css)
 const macher = document.createElement('p');
-macher.className = 'k-macher';
-macher.textContent = MACHER;
+macher.className = 'credits-alle';
+macher.textContent = 'Ein Film von Max, Henri und Julian';
 $('.sub', titel).after(macher);
+
+const abspann = document.createElement('div');
+abspann.className = 'abspann';
+abspann.setAttribute('aria-label', 'Abspann');
+abspann.innerHTML = `
+  <p class="abspann-rolle">Ein Projekt von</p>
+  <p class="abspann-namen">Max<span>·</span>Henri<span>·</span>Julian</p>
+  <p class="abspann-rolle">Präsentation &amp; Inhalte</p>
+  <p class="abspann-zeile">Max, Henri und Julian</p>
+  <p class="abspann-rolle">Film, Website &amp; Umsetzung</p>
+  <p class="abspann-zeile">Julian</p>
+  <p class="abspann-rolle">Erstellt mit</p>
+  <p class="abspann-werkzeuge">Claude Code · ComfyUI · Wan 2.2 · Juggernaut XL · Real-ESRGAN · ElevenLabs</p>
+  <p class="abspann-quelle">nach Ovid, Metamorphosen XI</p>`;
+$('#end .path').after(abspann);
 
 const lobby = document.createElement('div');
 lobby.id = 'k-lobby';
@@ -228,9 +243,6 @@ function zaehlen() {
 for (const id of Object.keys(vergeben)) namensKachel(id, true);
 zaehlen();
 
-// Credits auch auf dem Endbild
-const endMacher = macher.cloneNode(true);
-$('#end .path').after(endMacher);
 
 // Kleiner Code in der Ecke, solange abgestimmt wird – für Nachzügler
 const ecke = document.createElement('div');
