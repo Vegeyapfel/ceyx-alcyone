@@ -92,9 +92,8 @@
 body.k-stimmt #k-ecke { opacity: .95; transform: none; }
 
 /* ---------- Abstimmung: die Waage ---------- */
-#choice.k-aktiv .question, #choice.k-aktiv .options { visibility: hidden; }
-#choice.k-keine .question::after { content: 'Keine Stimme – bitte vorne wählen'; display: block; margin-top: .6em;
-  font-size: .6em; letter-spacing: .06em; color: var(--leise); font-style: italic; }
+/* Klassenversion: gewählt wird nur auf den Handys – vorne gibt es keine Auswahlknöpfe */
+#choice .question, #choice .options { visibility: hidden; }
 
 #k-wahl { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; align-items: center;
   justify-content: flex-end; padding-bottom: 15vh; pointer-events: none; text-align: center;

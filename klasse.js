@@ -312,7 +312,7 @@ $('#again').addEventListener('click', () => verbindung.senden({ t: 'warten' }));
 
 const beschriftung = (b) => b.lastChild.textContent.trim();
 const frageNachricht = () => ({
-  t: 'frage', n: runde.n, q: runde.frage, o: runde.texte, z: runde.ziel,
+  t: 'frage', n: runde.n, q: runde.frage, o: runde.texte, z: runde.wunsch,
   ms: Math.max(0, runde.frist - Date.now()), ts: Date.now(),
 });
 
@@ -321,23 +321,24 @@ function starten() {
   if (knoepfe.length < 2) return;
   runde = {
     n: Date.now(), frage: $('.question', wahl).textContent, knoepfe,
-    texte: knoepfe.map(beschriftung), stimmen: new Map(), ziel: -1,
+    texte: knoepfe.map(beschriftung), stimmen: new Map(), wunsch: -1,
     frist: 0, zeitgeber: 0, entschieden: false,
     anteil: 0.5, ziel: 0.5, zahlen: knoepfe.map(() => 0), anzeige: knoepfe.map(() => 0),
   };
   // Lenkung (taktik.js): andere Formulierung, gewünschte Möglichkeit merken
   const t = TAKTIK[window.__film && window.__film.szene];
   if (t && Array.isArray(t.texte) && t.texte.length === knoepfe.length) runde.texte = [...t.texte];
-  if (t && Number.isInteger(t.ziel) && t.ziel >= 0 && t.ziel < knoepfe.length) runde.ziel = t.ziel;
+  if (t && Number.isInteger(t.ziel) && t.ziel >= 0 && t.ziel < knoepfe.length) runde.wunsch = t.ziel;
 
   // Vorne selbst klicken entscheidet sofort – wie im Original
   knoepfe.forEach((b, i) => b.addEventListener('click', () => verkuenden(i), { capture: true, once: true }));
 
-  if (handys.size === 0) return;   // keine Handys: Original-Verhalten
+  // Abgestimmt wird nur auf den Handys – auch ohne verbundene Handys läuft die Zeit,
+  // danach entscheidet der Film selbst (siehe auswerten).
 
   $('.k-frage', waage).textContent = runde.frage;
   $('.k-seiten', waage).innerHTML = runde.texte.map((t, i) => `
-    <div class="k-seite${i === runde.ziel ? ' k-warm' : ''}" data-i="${i}">
+    <div class="k-seite${i === runde.wunsch ? ' k-warm' : ''}" data-i="${i}">
       <span class="k-roem">${ROEM[i] || i + 1}</span>
       <span class="k-option"></span>
       <span class="k-prozent"><b>0</b><small>%</small></span>
@@ -435,22 +436,14 @@ function funke(i, name) {
 function auswerten() {
   if (!runde || runde.entschieden) return;
   const r = runde;
-  if (r.stimmen.size === 0) {
-    waage.classList.add('k-leer');
-    waage.classList.remove('k-an');
-    wahl.classList.remove('k-aktiv');
-    wahl.classList.add('k-keine');
-    document.body.classList.remove('k-stimmt');
-    lage();
-    return;
-  }
   const max = Math.max(...r.zahlen);
   const vorn = r.zahlen.flatMap((z, i) => (z === max ? [i] : []));
-  // Gleichstand: die gewünschte Möglichkeit gewinnt, sonst das Los
-  const sieger = vorn.includes(r.ziel) ? r.ziel : vorn[Math.floor(Math.random() * vorn.length)];
+  // Gleichstand (auch: keine Stimme): die gewünschte Möglichkeit gewinnt, sonst das Los
+  const sieger = vorn.includes(r.wunsch) ? r.wunsch : vorn[Math.floor(Math.random() * vorn.length)];
   waage.querySelectorAll('.k-seite').forEach((s, i) => s.classList.add(i === sieger ? 'k-sieger' : 'k-verlierer'));
   waage.classList.add('k-fertig');
-  $('.k-stand', waage).textContent = vorn.length > 1 ? (vorn.includes(r.ziel) ? 'Gleichstand' : 'Gleichstand – das Los hat entschieden') : 'Die Klasse hat entschieden';
+  $('.k-stand', waage).textContent = r.stimmen.size === 0 ? 'Keine Stimmen – der Film entscheidet'
+    : vorn.length > 1 ? (vorn.includes(r.wunsch) ? 'Gleichstand' : 'Gleichstand – das Los hat entschieden') : 'Die Klasse hat entschieden';
   verkuenden(sieger);
   const knopf = r.knoepfe[sieger];
   setTimeout(() => {
