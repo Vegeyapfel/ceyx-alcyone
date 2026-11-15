@@ -4,26 +4,28 @@
 .credits-alle { margin: 1.3vh 0 0; font-size: clamp(12px, 1.05vw, 17px); letter-spacing: .26em; text-transform: uppercase;
   color: #d9b877; opacity: .85; }
 
-/* Abspann auf dem Endbild: Zeile für Zeile, wie im Kino */
-.abspann { display: flex; flex-direction: column; align-items: center; margin: 0 0 3.4vh; text-align: center; }
-.abspann-rolle { margin: 2.2vh 0 .8vh; font-size: clamp(9px, .72vw, 12px); letter-spacing: .32em; text-transform: uppercase; color: #8f897d; }
-.abspann-rolle:first-child { margin-top: 0; }
-.abspann-namen { margin: 0; font-size: clamp(20px, 2.2vw, 36px); letter-spacing: .22em; text-indent: .22em; text-transform: uppercase;
-  color: #e9e2d4; text-shadow: 0 0 30px rgba(217, 184, 119, .3); }
-.abspann-namen span { color: #d9b877; margin: 0 .35em; }
-/* Werkzeugliste: Aufgabe links, Werkzeug rechts – wie Filmcredits */
-.abspann-tools { display: grid; grid-template-columns: auto auto; column-gap: 1.1em; row-gap: .45vh; margin: 0;
-  font-size: clamp(11px, .9vw, 15px); line-height: 1.35; }
-.abspann-tools dt { text-align: right; color: #8f897d; letter-spacing: .04em; }
-.abspann-tools dd { margin: 0; text-align: left; color: #d9b877; letter-spacing: .08em; }
-.abspann-quelle { margin: 2.4vh 0 0; font-style: italic; font-size: clamp(11px, .85vw, 14px); color: #7d776c; }
+/* Abspann wie im Kino: schwarz, alles mittig, rollt langsam nach oben */
+#k-abspann { position: fixed; inset: 0; z-index: 200; background: #000; overflow: hidden;
+  opacity: 0; visibility: hidden; transition: opacity 1.4s ease, visibility 0s linear 1.4s; cursor: pointer; }
+#k-abspann.an { opacity: 1; visibility: visible; transition: opacity 1.4s ease; }
+.ab-band { position: absolute; left: 0; right: 0; top: 100%; display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 0 16px; }
+#k-abspann.an .ab-band { animation: ab-rollen 30s linear 1.6s forwards; }
+@keyframes ab-rollen { from { transform: translateY(0); } to { transform: translateY(calc(-100% - 100vh)); } }
 
-#end:not(.hidden) .abspann > :not(.abspann-tools),
-#end:not(.hidden) .abspann-tools > * { animation: abspann-auf 1.4s cubic-bezier(.2, .7, .2, 1) both; }
-#end:not(.hidden) .abspann > :nth-child(1) { animation-delay: .6s; }
-#end:not(.hidden) .abspann > :nth-child(2) { animation-delay: .9s; }
-#end:not(.hidden) .abspann > :nth-child(3) { animation-delay: 1.9s; }
-#end:not(.hidden) .abspann-tools > * { animation-delay: calc(2.3s + var(--i, 0) * .3s); }
-#end:not(.hidden) .abspann > :nth-child(5) { animation-delay: 4.6s; }
-@keyframes abspann-auf { from { opacity: 0; transform: translateY(10px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
-@media (prefers-reduced-motion: reduce) { #end:not(.hidden) .abspann > *, #end:not(.hidden) .abspann-tools > * { animation: none; } }
+.ab-band p { margin: 0; }
+.ab-titel { font-size: clamp(30px, 4.4vw, 72px); letter-spacing: .04em; color: #efe7d6; }
+.ab-titel span { color: #d9b877; font-style: italic; }
+.ab-unter { margin-top: 1.4vh !important; font-style: italic; font-size: clamp(13px, 1.2vw, 20px); color: #8f897d; }
+.ab-abstand { margin-top: 16vh !important; }
+.ab-kopf { margin-bottom: 4vh !important; font-size: clamp(11px, .95vw, 15px); letter-spacing: .5em; text-indent: .5em;
+  text-transform: uppercase; color: #d9b877; }
+.ab-rolle { margin-top: 5vh !important; font-size: clamp(10px, .8vw, 13px); letter-spacing: .34em; text-indent: .34em;
+  text-transform: uppercase; color: #8f897d; }
+.ab-kopf + .ab-rolle { margin-top: 0 !important; }
+.ab-rolle.ab-abstand { margin-top: 16vh !important; }
+.ab-wert { margin-top: .9vh !important; font-size: clamp(18px, 1.9vw, 30px); letter-spacing: .08em; color: #efe7d6; }
+.ab-namen { margin-top: 1.2vh !important; font-size: clamp(22px, 2.8vw, 44px); letter-spacing: .24em; text-indent: .24em;
+  text-transform: uppercase; color: #efe7d6; }
+.ab-namen span { color: #d9b877; margin: 0 .45em; }
+.ab-finis { font-size: clamp(14px, 1.3vw, 22px); letter-spacing: .6em; text-indent: .6em; color: #d9b877; }

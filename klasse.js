@@ -108,23 +108,35 @@ macher.className = 'credits-alle';
 macher.textContent = 'Ein Film von Max, Henri und Julian';
 $('.sub', titel).after(macher);
 
+// Abspann wie im Kino: schwarzes Bild, zentrierte Zeilen rollen langsam nach oben.
+// Danach (oder per Klick) blendet er aus und gibt das Endbild frei.
 const abspann = document.createElement('div');
-abspann.className = 'abspann';
+abspann.id = 'k-abspann';
 abspann.setAttribute('aria-label', 'Abspann');
-abspann.innerHTML = `
-  <p class="abspann-rolle">Ein Projekt von</p>
-  <p class="abspann-namen">Max<span>·</span>Henri<span>·</span>Julian</p>
-  <p class="abspann-rolle">Werkzeuge</p>
-  <dl class="abspann-tools">
-    <dt style="--i:0">Bilder</dt><dd style="--i:0">Juggernaut XL</dd>
-    <dt style="--i:1">Bewegung</dt><dd style="--i:1">Wan 2.2</dd>
-    <dt style="--i:2">Bildschärfe</dt><dd style="--i:2">Real-ESRGAN</dd>
-    <dt style="--i:3">Arbeitsfläche der Bild-KI</dt><dd style="--i:3">ComfyUI</dd>
-    <dt style="--i:4">Erzählerstimme</dt><dd style="--i:4">ElevenLabs</dd>
-    <dt style="--i:5">Programmierung</dt><dd style="--i:5">Claude Code</dd>
-  </dl>
-  <p class="abspann-quelle">nach Ovid, Metamorphosen XI</p>`;
-$('#end .path').after(abspann);
+const eintrag = (rolle, wert) => `<p class="ab-rolle">${rolle}</p><p class="ab-wert">${wert}</p>`;
+abspann.innerHTML = `<div class="ab-band">
+  <p class="ab-titel">Ceyx <span>&amp;</span> Alcyone</p>
+  <p class="ab-unter">nach Ovid, Metamorphosen XI</p>
+  <p class="ab-rolle ab-abstand">Ein Projekt von</p>
+  <p class="ab-namen">Max<span>·</span>Henri<span>·</span>Julian</p>
+  <p class="ab-kopf ab-abstand">Werkzeuge</p>
+  ${eintrag('Bilder', 'Juggernaut XL')}
+  ${eintrag('Bewegung', 'Wan 2.2')}
+  ${eintrag('Bildschärfe', 'Real-ESRGAN')}
+  ${eintrag('Arbeitsfläche der Bild-KI', 'ComfyUI')}
+  ${eintrag('Erzählerstimme', 'ElevenLabs')}
+  ${eintrag('Programmierung', 'Claude Code')}
+  <p class="ab-finis ab-abstand">FINIS</p>
+</div>`;
+document.body.append(abspann);
+const abspannAus = () => abspann.classList.remove('an');
+function abspannStart() {
+  abspann.classList.remove('an');
+  void abspann.offsetWidth;
+  abspann.classList.add('an');
+}
+abspann.addEventListener('click', abspannAus);
+$('.ab-band', abspann).addEventListener('animationend', () => setTimeout(abspannAus, 1200));
 
 const lobby = document.createElement('div');
 lobby.id = 'k-lobby';
@@ -308,7 +320,10 @@ beobachte(wahl, () => {
   if (sichtbar(wahl) && !runde) starten();
   else if (!sichtbar(wahl) && runde) aufraeumen();
 });
-beobachte(ende, () => { if (sichtbar(ende)) verbindung.senden({ t: 'ende' }); lage(); });
+beobachte(ende, () => {
+  if (sichtbar(ende)) { verbindung.senden({ t: 'ende' }); abspannStart(); } else abspannAus();
+  lage();
+});
 beobachte(titel, () => lage());
 $('#again').addEventListener('click', () => verbindung.senden({ t: 'warten' }));
 
