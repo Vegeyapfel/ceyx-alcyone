@@ -33,7 +33,7 @@
       "motion": "she looks at him silently with pleading eyes, lips closed, slight head movement, hair moves in the breeze, static camera, face stays stable",
       "subtitle": "Sie bittet ihn, sie mitzunehmen oder zu bleiben – sie fürchtet die Winde.",
       "choice": {
-        "prompt": "Was tut Alcyone?",
+        "prompt": "Was tut Alkyone?",
         "options": [
           {
             "label": "Sie fleht ihn an zu bleiben",
@@ -102,7 +102,7 @@
         "prompt": "Was tut Ceyx?",
         "options": [
           {
-            "label": "Alcyones Namen rufen",
+            "label": "Alkyones Namen rufen",
             "set": {
               "storm": "name"
             },
@@ -148,7 +148,7 @@
       "image": "ALCYONE sitting at a window of a bronze age palace room at dusk looking out at a calm grey sea, oil lamps, warm and cold light mixing",
       "motion": "she gazes at the sea, lamp flames flicker, curtains move slightly, slow push in",
       "choice": {
-        "prompt": "Wie verbringt Alcyone die Nächte?",
+        "prompt": "Wie verbringt Alkyone die Nächte?",
         "options": [
           {
             "label": "Sie betet im Tempel der Juno",
@@ -189,7 +189,7 @@
       "motion": "his face is full of grief and tenderness, his eyebrows draw up in the middle, his eyes are soft, sad and glistening with tears, he looks down lovingly and sorrowfully and speaks very quietly, his lips tremble, a single tear runs down his cheek into his wet beard, water drips from his soaked hair, then he slowly leans back and withdraws into the darkness until he is gone, static camera, nobody else in the frame",
       "subtitle": "Im Traum steht Ceyx vor ihr, bleich und triefend: Er sei tot, der Südwind habe sein Schiff zerschlagen.",
       "choice": {
-        "prompt": "Was tut Alcyone im Traum?",
+        "prompt": "Was tut Alkyone im Traum?",
         "options": [
           {
             "label": "Nach ihm greifen",
@@ -276,7 +276,7 @@
       "negative": "blood, gore, wounds, face visible",
       "subtitle": "ille est! – Da erkennt sie ihn: Er ist es.",
       "choice": {
-        "prompt": "Was tut Alcyone?",
+        "prompt": "Was tut Alkyone?",
         "options": [
           {
             "label": "Auf die Mole laufen, ihm entgegen",

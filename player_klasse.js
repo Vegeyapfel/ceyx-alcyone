@@ -267,7 +267,7 @@ function choose(choice) {
 
 const ENDINGS = {
   ovid: ['Ende', 'Das Ende, wie Ovid es erzählt: Beide leben als Eisvögel weiter.'],
-  shore: ['Ende', 'Ein anderes Ende: Alcyone bleibt am Ufer.'],
+  shore: ['Ende', 'Ein anderes Ende: Alkyone bleibt am Ufer.'],
 };
 
 function finish(kind) {
@@ -275,7 +275,7 @@ function finish(kind) {
   const [t, p] = ENDINGS[kind];
   $('#end .endtitle').textContent = t;
   const WEGE = {
-    farewell: { plea: 'Alcyone flehte Ceyx an zu bleiben', kiss: 'Alcyone ließ Ceyx mit einem Kuss ziehen' },
+    farewell: { plea: 'Alkyone flehte Ceyx an zu bleiben', kiss: 'Alkyone ließ Ceyx mit einem Kuss ziehen' },
     storm: { name: 'Ceyx rief im Sturm ihren Namen', star: 'Ceyx blickte zum verhüllten Morgenstern' },
     waiting: { pray: 'sie betete Nacht für Nacht zu Juno', weave: 'sie webte ein Gewand für seine Rückkehr' },
     dream: { reach: 'im Traum griff sie nach ihm', ask: 'im Traum fragte sie, ob er es wirklich sei' },
