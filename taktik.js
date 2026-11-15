@@ -16,6 +16,7 @@ export const TAKTIK = {
   },
   ufer_nah: {
     ziel: 0,
+    fest: true,   // gewinnt immer – der Film endet stets mit der Mole
     texte: ['Sie läuft auf die Mole – ihm entgegen', 'Sie bleibt am Ufer sitzen'],
   },
 };

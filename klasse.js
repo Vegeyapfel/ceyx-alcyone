@@ -330,7 +330,7 @@ function starten() {
   // Lenkung (taktik.js): andere Formulierung, gewünschte Möglichkeit merken
   const t = TAKTIK[window.__film && window.__film.szene];
   if (t && Array.isArray(t.texte) && t.texte.length === knoepfe.length) runde.texte = [...t.texte];
-  if (t && Number.isInteger(t.ziel) && t.ziel >= 0 && t.ziel < knoepfe.length) runde.wunsch = t.ziel;
+  if (t && Number.isInteger(t.ziel) && t.ziel >= 0 && t.ziel < knoepfe.length) { runde.wunsch = t.ziel; runde.fest = t.fest === true; }
 
   // Vorne selbst klicken entscheidet sofort – wie im Original
   knoepfe.forEach((b, i) => b.addEventListener('click', () => verkuenden(i), { capture: true, once: true }));
@@ -441,10 +441,11 @@ function auswerten() {
   const max = Math.max(...r.zahlen);
   const vorn = r.zahlen.flatMap((z, i) => (z === max ? [i] : []));
   // Gleichstand (auch: keine Stimme): die gewünschte Möglichkeit gewinnt, sonst das Los
-  const sieger = vorn.includes(r.wunsch) ? r.wunsch : vorn[Math.floor(Math.random() * vorn.length)];
+  const sieger = r.fest || vorn.includes(r.wunsch) ? r.wunsch : vorn[Math.floor(Math.random() * vorn.length)];
   waage.querySelectorAll('.k-seite').forEach((s, i) => s.classList.add(i === sieger ? 'k-sieger' : 'k-verlierer'));
   waage.classList.add('k-fertig');
   $('.k-stand', waage).textContent = r.stimmen.size === 0 ? 'Keine Stimmen – der Film entscheidet'
+    : r.fest && !vorn.includes(sieger) ? 'Doch das Schicksal hat anders entschieden'
     : vorn.length > 1 ? (vorn.includes(r.wunsch) ? 'Gleichstand' : 'Gleichstand – das Los hat entschieden') : 'Die Klasse hat entschieden';
   verkuenden(sieger);
   const knopf = r.knoepfe[sieger];
