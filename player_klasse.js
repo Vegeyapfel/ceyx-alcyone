@@ -174,13 +174,18 @@ async function playScene(id) {
   video.muted = !synced;
   const img = `stills/${id}.png`;
   let duration = 6000;
+  // Feinschnitt aus story.json: später einsteigen, je nach vorheriger Szene
+  // (start_from), und/oder langsamer abspielen (rate)
+  const ab = (scene.start_from || {})[path[path.length - 2]] || 0;
+  const tempo = scene.rate || 1;
 
   if (await exists(clip)) {
     video.src = clip;
     video.playbackRate = 1;
     video.style.display = '';
     await new Promise((r) => { video.onloadeddata = r; video.onerror = r; video.load(); });
-    duration = (video.duration || 5) * 1000;
+    if (ab) await new Promise((r) => { video.onseeked = r; video.currentTime = ab; setTimeout(r, 1500); });
+    duration = ((video.duration || 5) - ab) * 1000 / tempo;
   } else if (await exists(img)) {
     still.style.backgroundImage = `url(${img})`;
     still.classList.add('kenburns');
@@ -202,7 +207,7 @@ async function playScene(id) {
   await chapter;
   if (ich !== lauf) return;
 
-  if (video.style.display !== 'none') { video.currentTime = 0; video.play().catch(() => {}); }
+  if (video.style.display !== 'none') { video.currentTime = ab; video.playbackRate = tempo; video.play().catch(() => {}); }
   subtitle(scene.subtitle);
   if (synced) duck(true);
   const voiceMs = fruehStimme ? await fruehStimme : (scene.subtitle && !synced ? await speak(id) : 0);
@@ -214,7 +219,7 @@ async function playScene(id) {
   const need = voiceMs ? Math.max(duration - 450, voiceMs + 150) : Math.max(duration - 450, readTime(scene.subtitle));
   if (video.style.display !== 'none' && need > duration) {
     const rate = Math.max(0.65, duration / need);
-    video.playbackRate = rate;
+    video.playbackRate = tempo * rate;
     duration /= rate;
   }
   if (video.style.display !== 'none' && need > duration) {

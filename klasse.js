@@ -114,13 +114,15 @@ abspann.setAttribute('aria-label', 'Abspann');
 abspann.innerHTML = `
   <p class="abspann-rolle">Ein Projekt von</p>
   <p class="abspann-namen">Max<span>·</span>Henri<span>·</span>Julian</p>
-  <p class="abspann-rolle">Präsentation &amp; Inhalte</p>
-  <p class="abspann-zeile">Max, Henri und Julian</p>
-  <p class="abspann-rolle">Konzept, Regie &amp; Umsetzung</p>
-  <p class="abspann-zeile">Julian</p>
-  <p class="abspann-zusatz">im Vibe-Coding mit KI – Julian gibt Idee und Richtung vor, die KI hilft beim Programmieren und Rendern</p>
   <p class="abspann-rolle">Werkzeuge</p>
-  <p class="abspann-werkzeuge">ComfyUI · Wan 2.2 · Juggernaut XL · Real-ESRGAN · ElevenLabs · Claude Code</p>
+  <dl class="abspann-tools">
+    <dt style="--i:0">Bilder</dt><dd style="--i:0">Juggernaut XL</dd>
+    <dt style="--i:1">Bewegung</dt><dd style="--i:1">Wan 2.2</dd>
+    <dt style="--i:2">Bildschärfe</dt><dd style="--i:2">Real-ESRGAN</dd>
+    <dt style="--i:3">Arbeitsfläche der Bild-KI</dt><dd style="--i:3">ComfyUI</dd>
+    <dt style="--i:4">Erzählerstimme</dt><dd style="--i:4">ElevenLabs</dd>
+    <dt style="--i:5">Programmierung</dt><dd style="--i:5">Claude Code</dd>
+  </dl>
   <p class="abspann-quelle">nach Ovid, Metamorphosen XI</p>`;
 $('#end .path').after(abspann);
 

@@ -136,6 +136,8 @@
       "image": "close shot of a drowning bearded man in a soaked red cloak in the black storm sea at night, head and shoulders above the choppy water, arms gripping a broken wooden plank, rain, lightning",
       "motion": "he struggles in the water, arms pulling at the plank, head lifting to breathe, waves lift and drop him, then a dark wall of water rises behind him and collapses over him, he disappears under the churning white foam, handheld camera, realistic heavy water physics",
       "subtitle": "niger arcus aquarum frangitur et rupta mersum caput obruit unda – Ein schwarzer Bogen aus Wasser bricht über ihm zusammen.",
+      "start_from": { "sturm_ruf": 1.8 },
+      "rate": 0.72,
       "next": "warten_1",
       "end_image": "a wall of black storm water and churning white foam filling the frame at night, no person"
     },
@@ -322,6 +324,7 @@
       "image": "two blue kingfisher birds rising together from the calm sea into a golden sky",
       "motion": "a second kingfisher rises from the water and both birds fly upward together, circling",
       "subtitle": "Die Götter erbarmten sich: Auch Ceyx wurde ein Vogel.",
+      "rate": 0.7,
       "next_if": [
         {
           "flag": "waiting",

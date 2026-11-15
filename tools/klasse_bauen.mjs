@@ -166,7 +166,7 @@ async function existsNetz(url) {
     + '  const need = voiceMs ? Math.max(duration - 450, voiceMs + 150) : Math.max(duration - 450, readTime(scene.subtitle));\n'
     + '  if (video.style.display !== \'none\' && need > duration) {\n'
     + '    const rate = Math.max(0.65, duration / need);\n'
-    + '    video.playbackRate = rate;\n'
+    + '    video.playbackRate = tempo * rate;\n'
     + '    duration /= rate;\n'
     + '  }\n')
   .text();
