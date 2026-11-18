@@ -399,13 +399,17 @@ function neuZaehlen() {
 function bewegen() {
   const r = runde;
   if (!r || (r.entschieden && !waage.classList.contains('k-an'))) return;
-  r.anteil += (r.ziel - r.anteil) * 0.12;
+  // Zeitbasiert statt pro Bild: gleich schnell, auch wenn der Browser weniger Bilder malt
+  const jetztT = performance.now();
+  const k = 1 - Math.exp(-(jetztT - (r.letztesBild || jetztT - 16)) / 110);
+  r.letztesBild = jetztT;
+  r.anteil += (r.ziel - r.anteil) * k;
   setzeWaage(r.anteil);
   const gesamt = Math.max(1, r.stimmen.size);
   const prozente = [...waage.querySelectorAll('.k-prozent b')];
-  r.zahlen.forEach((z, i) => {
+  if (!waage.classList.contains('k-fertig')) r.zahlen.forEach((z, i) => {
     const soll = r.stimmen.size ? (100 * z) / gesamt : 0;
-    r.anzeige[i] += (soll - r.anzeige[i]) * 0.14;
+    r.anzeige[i] += (soll - r.anzeige[i]) * k;
     if (prozente[i]) prozente[i].textContent = Math.round(r.anzeige[i]);
   });
   r.takt = requestAnimationFrame(bewegen);
@@ -458,6 +462,17 @@ function auswerten() {
   // Gleichstand (auch: keine Stimme): die gewünschte Möglichkeit gewinnt, sonst das Los
   const sieger = r.fest || vorn.includes(r.wunsch) ? r.wunsch : vorn[Math.floor(Math.random() * vorn.length)];
   waage.querySelectorAll('.k-seite').forEach((s, i) => s.classList.add(i === sieger ? 'k-sieger' : 'k-verlierer'));
+  // Endstand sofort exakt zeigen (Prozente ergeben zusammen 100)
+  if (r.stimmen.size) {
+    const roh = r.zahlen.map((z) => (100 * z) / r.stimmen.size);
+    const ganz = roh.map(Math.floor);
+    let rest = 100 - ganz.reduce((a, b) => a + b, 0);
+    roh.map((x, i) => [x - ganz[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (rest-- > 0) ganz[i]++; });
+    r.anzeige = ganz.slice();
+    waage.querySelectorAll('.k-prozent b').forEach((b, i) => { b.textContent = ganz[i]; });
+    r.anteil = r.ziel;
+    setzeWaage(r.anteil);
+  }
   waage.classList.add('k-fertig');
   $('.k-stand', waage).textContent = r.stimmen.size === 0 ? 'Keine Stimmen – der Film entscheidet'
     : r.fest && !vorn.includes(sieger) ? 'Doch das Schicksal hat anders entschieden'
