@@ -114,22 +114,58 @@ const PRESETS = {
   },
 };
 
+// Safari (iPhone, iPad, Mac) gibt Ton nur frei, wenn er direkt beim Tippen startet.
+// Deshalb wird beim Start alles im selben Moment „entsperrt": die Geräuschkulisse,
+// zwei feste Musik-Spieler und (in player.js) die Erzählerstimme.
+const STUMM = (() => {
+  const n = 800, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+  const s = (o, t) => [...t].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  s(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); s(8, 'WAVE'); s(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, 8000, true); v.setUint32(28, 16000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  s(36, 'data'); v.setUint32(40, n * 2, true);
+  return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+})();
+
+/** Spielt kurz Stille ab – danach darf das Element auch später ohne Tippen abspielen. */
+export function entsperre(el) {
+  if (!el || el.dataset.frei) return;
+  el.dataset.frei = '1';
+  if (el.getAttribute('src')) return;   // spielt schon etwas – nicht unterbrechen
+  el.src = STUMM;
+  el.play().then(() => { if (el.src === STUMM) el.pause(); }).catch(() => { delete el.dataset.frei; });
+}
+
+const musikSpieler = [new Audio(), new Audio()];
+
 let starting = null;
 export function startAudio() {
+  // Synchron im Tipp-Moment: Audio anlegen und freischalten
+  if (!ctx) {
+    try {
+      ctx = new AudioContext();
+      master = ctx.createGain();
+      master.gain.value = 0.8;
+      master.connect(ctx.destination);
+    } catch { /* kein WebAudio */ }
+  }
+  if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
+  musikSpieler.forEach(entsperre);
   return (starting ??= initAudio());
 }
 
 async function initAudio() {
-  if (ctx) return;
   try {
     const r = await fetch('music/storm.mp3', { method: 'HEAD' });
     musicAvailable = r.ok && (r.headers.get('content-type') || '').startsWith('audio');
   } catch { musicAvailable = false; }
-  ctx = new AudioContext();
-  master = ctx.createGain();
-  master.gain.value = 0.8;
-  master.connect(ctx.destination);
 }
+
+// Falls der Ton trotzdem hängt (z. B. nach Wechsel in eine andere App): beim nächsten Tippen weiter
+window.addEventListener('pointerdown', () => {
+  if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
+  if (musicEl.a && musicEl.a.paused) musicEl.a.play().catch(() => {});
+}, true);
 
 /** Wechselt weich (3 s Überblendung) zur Kulisse `name`. */
 export function setAmbience(name) {
@@ -154,8 +190,10 @@ export function setAmbience(name) {
 function setMusic(name) {
   if (!musicAvailable || musicEl.name === name) return;
   const old = musicEl.a;
-  if (old) fadeTo(old, 0, 3000, () => old.pause());
-  const a = new Audio(`music/${name}.mp3`);
+  if (old) fadeTo(old, 0, 3000, () => { if (musicEl.a !== old) old.pause(); });
+  // Immer abwechselnd einer der beiden beim Start freigeschalteten Spieler
+  const a = musikSpieler[old === musikSpieler[0] ? 1 : 0];
+  a.src = `music/${name}.mp3`;
   a.loop = true;
   a.volume = 0;
   a.play().catch(() => {});

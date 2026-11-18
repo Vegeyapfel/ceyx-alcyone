@@ -125,7 +125,10 @@ const player = patcher('player.js')
     "const story = await (await fetch('story.json')).json();\n"
     + "// Klassenversion: Kapitelverse wörtlich aus dem Unterrichtstext, Untertitel = was der Sprecher sagt\n"
     + "for (const [id, k] of Object.entries(KAPITEL)) if (story.scenes[id]) story.scenes[id].verse = [`${k.la}  ·  Met. XI, ${k.v}`, k.de];\n"
-    + "for (const [id, t] of Object.entries(GESPROCHEN)) if (story.scenes[id]) story.scenes[id].subtitle = t;\n")
+    + "for (const [id, t] of Object.entries(GESPROCHEN)) if (story.scenes[id]) story.scenes[id].subtitle = t;\n"
+    + "// Klassenversion: am Ufer keine Abstimmung – es geht immer weiter zur Mole (Ovids Ende)\n"
+    + "if (story.scenes.ufer_nah && story.scenes.mole_1) { delete story.scenes.ufer_nah.choice; story.scenes.ufer_nah.next = 'mole_1'; story.scenes.mole_1.set = { end: 'mole' }; }\n")
+  .ersetze('  path.push(id);\n', '  path.push(id);\n  if (scene.set) Object.assign(flags, scene.set);\n')
   // ---- Flüssigerer Ablauf (nur Klassenversion) ----
   // 1. Vorhandene Dateien merken und die nächsten Szenen im Hintergrund vorladen,
   //    damit zwischen zwei Szenen nicht erst geladen werden muss.

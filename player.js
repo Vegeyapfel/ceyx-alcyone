@@ -3,6 +3,7 @@
 // stills/<id>.png mit Ken-Burns-Fahrt gezeigt, fehlt auch das, eine Textkarte.
 
 import { startAudio, setAmbience, duck } from './ambience.js';
+import { entsperre } from './ambience.js';
 
 const $ = (s) => document.querySelector(s);
 
@@ -261,6 +262,9 @@ function retryFullscreenOnTap() {
 }
 
 $('#start').onclick = async () => {
+  // Ton zuerst – Safari erlaubt ihn nur direkt im Moment des Tippens
+  startAudio();
+  entsperre(voice);
   await goFullscreen();
   retryFullscreenOnTap();
   await startAudio();
@@ -269,6 +273,7 @@ $('#start').onclick = async () => {
 };
 $('#again').onclick = () => {
   startAudio();
+  entsperre(voice);
   flags = {}; path = [];
   $('#end').classList.add('hidden');
   playScene(story.start);

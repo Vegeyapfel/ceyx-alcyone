@@ -5,6 +5,7 @@
 
 import { startAudio, setAmbience, duck } from './ambience.js';
 import { KAPITEL, GESPROCHEN } from './latein.js';
+import { entsperre } from './ambience.js';
 
 const $ = (s) => document.querySelector(s);
 
@@ -15,6 +16,8 @@ const story = await (await fetch('story.json')).json();
 // Klassenversion: Kapitelverse wörtlich aus dem Unterrichtstext, Untertitel = was der Sprecher sagt
 for (const [id, k] of Object.entries(KAPITEL)) if (story.scenes[id]) story.scenes[id].verse = [`${k.la}  ·  Met. XI, ${k.v}`, k.de];
 for (const [id, t] of Object.entries(GESPROCHEN)) if (story.scenes[id]) story.scenes[id].subtitle = t;
+// Klassenversion: am Ufer keine Abstimmung – es geht immer weiter zur Mole (Ovids Ende)
+if (story.scenes.ufer_nah && story.scenes.mole_1) { delete story.scenes.ufer_nah.choice; story.scenes.ufer_nah.next = 'mole_1'; story.scenes.mole_1.set = { end: 'mole' }; }
 const layers = [$('#layerA'), $('#layerB')];
 let front = 0;
 let flags = {};
@@ -155,6 +158,7 @@ async function playScene(id) {
   const scene = story.scenes[id];
   path.push(id);
   vorladen(scene);
+  if (scene.set) Object.assign(flags, scene.set);
   setAmbience((AMBIENCE.find(([p]) => id.startsWith(p)) || [])[1]);
 
   const next = layers[1 - front];
@@ -355,6 +359,9 @@ function retryFullscreenOnTap() {
 }
 
 $('#start').onclick = async () => {
+  // Ton zuerst – Safari erlaubt ihn nur direkt im Moment des Tippens
+  startAudio();
+  entsperre(voice);
   await goFullscreen();
   retryFullscreenOnTap();
   await startAudio();
@@ -363,6 +370,7 @@ $('#start').onclick = async () => {
 };
 $('#again').onclick = () => {
   startAudio();
+  entsperre(voice);
   flags = {}; path = [];
   $('#end').classList.add('hidden');
   playScene(story.start);

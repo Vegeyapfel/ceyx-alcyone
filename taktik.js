@@ -14,9 +14,5 @@ export const TAKTIK = {
     ziel: 0,
     texte: ['Sie betet zu Juno, dass er heimkehrt', 'Sie webt an einem Gewand'],
   },
-  ufer_nah: {
-    ziel: 0,
-    fest: true,   // gewinnt immer – der Film endet stets mit der Mole
-    texte: ['Sie läuft auf die Mole – ihm entgegen', 'Sie bleibt am Ufer sitzen'],
-  },
+  // ufer_nah: keine Abstimmung mehr – die Klassenversion geht immer zur Mole (tools/klasse_bauen.mjs)
 };
