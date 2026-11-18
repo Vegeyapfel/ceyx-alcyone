@@ -152,7 +152,7 @@
 <main>
   <section class="ansicht" id="v-code">
     <h2>Mitentscheiden</h2>
-    <p class="leise">Gib den Code ein, der vorne auf dem Bildschirm steht.</p>
+    <p class="leise" id="codehinweis">Gib den Code ein, der vorne auf dem Bildschirm steht.</p>
     <form id="codeform">
       <input id="codefeld" maxlength="7" placeholder="······" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Raumcode">
       <button type="submit">Beitreten</button>
@@ -223,16 +223,16 @@
   const params = new URLSearchParams(location.search);
   const raum = (params.get('r') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 
+  $('#codeform').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const c = $('#codefeld').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (!/^[A-Z2-9]{6}$/.test(c)) { $('#codefehler').textContent = 'Der Code hat sechs Zeichen.'; return; }
+    params.set('r', c);
+    location.search = params.toString();
+  });
   if (!/^[A-Z2-9]{6}$/.test(raum)) {
     zeige('v-code');
     setTimeout(() => $('#codefeld').focus(), 300);
-    $('#codeform').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const c = $('#codefeld').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      if (!/^[A-Z2-9]{6}$/.test(c)) { $('#codefehler').textContent = 'Der Code hat sechs Zeichen.'; return; }
-      params.set('r', c);
-      location.search = params.toString();
-    });
   } else {
     beitreten(raum);
   }
@@ -373,16 +373,34 @@
     const verbindung = kanal(raum, empfang, { rueckblick: '20s' });
     const melden = () => verbindung.senden({ t: 'da', id: ich });
     melden();
-    // Falls die erste Meldung verloren geht: nachfragen, bis ein Name kommt
+    // Erst wenn der Fernseher antwortet, gilt die Verbindung. Antwortet er nicht
+    // (alter QR-Code, Film vorne geschlossen oder in neuem Tab mit neuem Code),
+    // bleibt das Handy nicht hängen: nach 15 s kommt die Code-Eingabe, im
+    // Hintergrund wird weiter nachgefragt.
+    let verbunden = false;
     let versuche = 0;
-    const nachfragen = setInterval(() => { if (meinName || versuche++ > 6) clearInterval(nachfragen); else melden(); }, 4000);
-
-    if (meinName) zeigeIch(meinName), zeige('v-warten');
+    const nachfragen = setInterval(() => {
+      if (verbunden) { clearInterval(nachfragen); return; }
+      versuche++;
+      if (versuche % 3 === 0 || versuche < 4) melden();      // anfangs alle 4 s, später alle 12 s
+      if (versuche === 4 && ansicht === 'v-verbinden') {
+        $('#codehinweis').textContent = `Zum Code ${raum.slice(0, 3)} ${raum.slice(3)} läuft gerade kein Film. Gib den Code ein, der jetzt vorne steht – oder scanne den QR-Code neu.`;
+        zeige('v-code');
+      }
+    }, 4000);
+    function verbindungSteht() {
+      if (verbunden) return;
+      verbunden = true;
+      $('#codehinweis').textContent = 'Gib den Code ein, der vorne auf dem Bildschirm steht.';
+      if (ansicht === 'v-code' || ansicht === 'v-verbinden') {
+        if (meinName && !namensPhase) { zeigeIch(meinName); zeige('v-warten'); } else zeige('v-verbinden');
+      }
+    }
 
     function zeigeIch(n) { const el = $('#ich'); el.textContent = roemisch(n); el.classList.add('an'); }
 
     async function nameErhalten(n) {
-      if (meinName === n && !namensPhase) return;
+      if (meinName === n && !namensPhase) { zeigeIch(n); return; }
       meinName = n;
       try { localStorage.setItem(merkName, n); } catch {}
       if (!namensPhase) { zeigeIch(n); return; }
@@ -398,6 +416,8 @@
 
     function empfang(m) {
       if (!m || !m.t) return;
+      if (m.t === 'da' || m.t === 'stimme' || m.t === 'gedreht') return;   // andere Handys
+      verbindungSteht();                                                 // der Fernseher lebt
       if (m.t === 'hallo') melden();
       else if (m.t === 'namen' && m.m && typeof m.m[ich] === 'string') nameErhalten(m.m[ich]);
       else if (m.t === 'frage') { if (ansicht === 'v-rad' || ansicht === 'v-name') wartendeFrage = m; else frage(m); }
