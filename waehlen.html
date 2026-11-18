@@ -418,7 +418,11 @@
       if (!m || !m.t) return;
       if (m.t === 'da' || m.t === 'stimme' || m.t === 'gedreht') return;   // andere Handys
       verbindungSteht();                                                 // der Fernseher lebt
-      if (m.t === 'hallo') melden();
+      if (m.t === 'hallo') {
+        melden();
+        // Film vorne neu geladen: aus dem alten Durchgang („Finis") zurück ins Warten
+        if (ansicht === 'v-ende') { aktuell = null; zeige(meinName ? 'v-warten' : 'v-verbinden'); }
+      }
       else if (m.t === 'namen' && m.m && typeof m.m[ich] === 'string') nameErhalten(m.m[ich]);
       else if (m.t === 'frage') { if (ansicht === 'v-rad' || ansicht === 'v-name') wartendeFrage = m; else frage(m); }
       else if (m.t === 'zu') entschieden(m);
