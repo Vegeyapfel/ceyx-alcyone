@@ -39,6 +39,14 @@
     background: rgba(7, 9, 11, .96); border-top: 1px solid var(--linie); display: flex; justify-content: center; gap: 14px; align-items: center; }
   .leiste .stand { font-family: system-ui, sans-serif; color: var(--leise); font-size: 15px; }
   .leiste button { border-color: var(--gold); color: var(--gold); }
+  .ziel { font-family: system-ui, sans-serif; font-size: 13px; color: var(--leise); margin: -6px 0 12px; }
+  .ziel.zulang { color: var(--rot); }
+  .vorlage { border-color: #3d3b35; color: var(--leise); }
+  #fehler { position: fixed; left: 16px; right: 16px; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 6; margin: 0;
+    pointer-events: none; }
+  #fehler:not(:empty) { background: #1d1311; border: 1px solid #5a2e27; padding: 10px 12px; }
+  .fortschritt { position: fixed; left: 0; right: 0; top: 0; height: 3px; background: #15181c; z-index: 5; }
+  .fortschritt i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .4s; }
   .fehler { color: var(--rot); font-family: system-ui, sans-serif; font-size: 15px; text-align: center; min-height: 20px; }
   #gate { position: fixed; inset: 0; z-index: 99; display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 18px; background: var(--grund); text-align: center; padding: 16px; }
@@ -77,16 +85,21 @@
   <p class="unter">Erzählerstimme aufnehmen</p>
   <div class="tipps">
     <b>So geht's:</b> Ruhiger Raum, Handy etwa eine Handbreit vom Mund. Auf <b>Aufnehmen</b> tippen, kurz warten, Satz ruhig sprechen,
-    dann <b>Stopp</b>. Mit <b>Anhören</b> prüfen – passt es nicht, einfach neu aufnehmen. Die Aufnahmen bleiben auf diesem Gerät gespeichert,
-    auch wenn du die Seite schließt. Zum Schluss unten auf <b>Alle herunterladen</b> tippen und die Datei an Julian schicken.
+    dann <b>Stopp</b>. Mit <b>Anhören</b> prüfen – passt es nicht, einfach neu aufnehmen. <b>Vorlage</b> spielt die bisherige
+    KI-Stimme als Beispiel fürs Tempo. Die Zeitangabe zeigt, wie lang der Satz höchstens sein sollte, damit er zur Szene passt.
+    Die Aufnahmen bleiben auf diesem Gerät gespeichert, auch wenn du die Seite schließt. Zum Schluss unten auf <b>Senden</b>
+    (direkt z. B. per WhatsApp) oder <b>Herunterladen</b> tippen und die Datei an Julian schicken.
+    Am PC geht's auch mit der <b>Leertaste</b>: einmal drücken startet den nächsten offenen Satz, nochmal drücken stoppt.
   </div>
   <p class="fehler" id="fehler"></p>
   <div id="liste"></div>
 </main>
 
+<div class="fortschritt"><i id="balken"></i></div>
 <div class="leiste">
   <span class="stand" id="stand"></span>
-  <button id="laden" type="button">Alle herunterladen</button>
+  <button id="teilen" type="button" hidden>Senden</button>
+  <button id="laden" type="button">Herunterladen</button>
 </div>
 
 <script type="module">
@@ -115,9 +128,11 @@
     k.innerHTML = `
       <div class="kopf"><span>${i + 1} · ${s.titel}</span><span class="ok"></span></div>
       <p class="text"></p>
+      <p class="ziel"></p>
       <div class="knoepfe">
         <button class="auf" type="button">Aufnehmen</button>
         <button class="hoer" type="button">Anhören</button>
+        <button class="vorlage" type="button" hidden>Vorlage</button>
         <span class="zeit"></span>
       </div>
       <div class="pegel"><i></i></div>`;
@@ -125,6 +140,18 @@
     $('.auf', k).onclick = () => (laufend && laufend.id === s.id ? stopp() : start(s.id));
     $('.hoer', k).onclick = () => anhoeren(s.id);
     liste.append(k);
+    // Vorlage (bisherige KI-Stimme) und Zielzeit: so lang darf der Satz etwa sein
+    const v = new Audio();
+    v.preload = 'metadata';
+    v.onloadedmetadata = () => {
+      if (!isFinite(v.duration)) return;
+      s.max = Math.max(3, v.duration * 1.25);
+      $('.vorlage', k).hidden = false;
+      $('.vorlage', k).onclick = () => { if (spieler) spieler.pause(); spieler = new Audio(v.src); spieler.play().catch(() => {}); };
+      zeigen();
+    };
+    v.src = `voice_el/${s.id}.mp3`;
+    if (s.id === 'einleitung') s.max = 22;
   });
   const karte = (id) => liste.querySelector(`[data-id="${id}"]`);
 
@@ -134,18 +161,35 @@
       const k = karte(s.id), a = aufnahmen[s.id];
       k.classList.toggle('fertig', !!a);
       $('.ok', k).textContent = a ? `✓ aufgenommen (${a.dauer.toFixed(1)} s)` : '';
+      const ziel = $('.ziel', k);
+      ziel.textContent = s.max ? `Ziel: höchstens ${s.max.toFixed(0)} s${a && a.dauer > s.max + 1 ? ' – etwas zu lang, gern zügiger sprechen' : ''}` : '';
+      ziel.classList.toggle('zulang', !!(a && s.max && a.dauer > s.max + 1));
       $('.hoer', k).disabled = !a || !!laufend;
       $('.auf', k).textContent = laufend && laufend.id === s.id ? 'Stopp' : a ? 'Neu aufnehmen' : 'Aufnehmen';
       $('.auf', k).disabled = !!laufend && laufend.id !== s.id;
       if (a) n++;
     }
-    $('#stand').textContent = `${n} von ${SAETZE.length} aufgenommen`;
-    $('#laden').disabled = n === 0 || !!laufend;
+    $('#stand').textContent = `${n} von ${SAETZE.length}`;
+    $('#balken').style.width = `${(100 * n) / SAETZE.length}%`;
+    $('#laden').disabled = $('#teilen').disabled = n === 0 || !!laufend;
+  }
+
+  /** Nach einer Aufnahme sanft zum nächsten offenen Satz scrollen. */
+  function weiter(id) {
+    const i = SAETZE.findIndex((s) => s.id === id);
+    const naechster = SAETZE.slice(i + 1).find((s) => !aufnahmen[s.id]);
+    if (naechster) setTimeout(() => karte(naechster.id).scrollIntoView({ behavior: 'smooth', block: 'center' }), 600);
   }
 
   // ---------- Aufnehmen ----------
-  let strom = null, laufend = null, spieler = null;
-  const fehler = (t) => { $('#fehler').textContent = t; };
+  let strom = null, laufend = null, spieler = null, sperre = null;
+  window.addEventListener('beforeunload', (e) => { if (laufend) { e.preventDefault(); e.returnValue = ''; } });
+  let fehlerUhr = 0;
+  const fehler = (t, bleibt = false) => {
+    $('#fehler').textContent = t;
+    clearTimeout(fehlerUhr);
+    if (t && !bleibt) fehlerUhr = setTimeout(() => { $('#fehler').textContent = ''; }, 6000);
+  };
 
   async function start(id) {
     fehler('');
@@ -153,7 +197,7 @@
     try {
       strom = strom || await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true } });
     } catch {
-      fehler('Kein Zugriff aufs Mikrofon. Bitte im Browser erlauben und die Seite neu laden.');
+      fehler('Kein Zugriff aufs Mikrofon. Bitte im Browser erlauben und die Seite neu laden.', true);
       return;
     }
     const typ = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm', 'audio/ogg'].find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
@@ -169,10 +213,14 @@
     const puffer = new Uint8Array(an.fftSize);
     const k = karte(id);
     k.classList.add('laeuft');
+    let spitze = 0, zuLaut = 0;
     const takt = () => {
       if (!laufend || laufend.id !== id) return;
       an.getByteTimeDomainData(puffer);
       let max = 0; for (const v of puffer) max = Math.max(max, Math.abs(v - 128));
+      spitze = Math.max(spitze, max / 128);
+      if (max >= 126) zuLaut++;
+      laufend.spitze = spitze; laufend.zuLaut = zuLaut;
       $('.pegel i', k).style.width = `${Math.min(100, (max / 128) * 180)}%`;
       $('.zeit', k).textContent = `${((performance.now() - t0) / 1000).toFixed(1)} s`;
       requestAnimationFrame(takt);
@@ -181,15 +229,24 @@
       ac.close();
       const dauer = (performance.now() - t0) / 1000;
       const blob = new Blob(teile, { type: rec.mimeType || typ || 'audio/webm' });
+      const pegel = { spitze: laufend.spitze || 0, zuLaut: laufend.zuLaut || 0 };
       laufend = null;
+      // Pegel prüfen: zu leise oder übersteuert?
+      if (pegel.spitze && pegel.spitze < 0.12) fehler('Die Aufnahme ist sehr leise – etwas näher ans Mikrofon oder lauter sprechen.');
+      else if (pegel.zuLaut > 8) fehler('Die Aufnahme ist übersteuert – etwas mehr Abstand zum Mikrofon.');
       k.classList.remove('laeuft');
       $('.pegel i', k).style.width = '0';
       $('.zeit', k).textContent = '';
       if (dauer < 0.8 || !blob.size) { fehler('Die Aufnahme war zu kurz – bitte nochmal.'); zeigen(); return; }
+      const neu = !aufnahmen[id];
       aufnahmen[id] = { blob, typ: blob.type, dauer };
       await speicher.setz(id, aufnahmen[id]);
+      if (sperre) { sperre.release().catch(() => {}); sperre = null; }
       zeigen();
+      if (neu) weiter(id);
     };
+    // Bildschirm während der Aufnahme nicht ausgehen lassen
+    try { sperre = await navigator.wakeLock?.request('screen'); } catch { sperre = null; }
     rec.start();
     zeigen();
     takt();
@@ -227,19 +284,41 @@
     e.setUint32(12, groesse, true); e.setUint32(16, pos, true);
     return new Blob([...teile, ...zentral, e], { type: 'application/zip' });
   }
-  $('#laden').onclick = async () => {
+  async function paket() {
     const dateien = [];
     for (const s of SAETZE) {
       const a = aufnahmen[s.id]; if (!a) continue;
       const endung = a.typ.includes('mp4') ? 'm4a' : a.typ.includes('ogg') ? 'ogg' : 'webm';
       dateien.push({ name: `${s.id}.${endung}`, daten: new Uint8Array(await a.blob.arrayBuffer()) });
     }
-    const url = URL.createObjectURL(await zip(dateien));
+    return zip(dateien);
+  }
+  $('#laden').onclick = async () => {
+    const url = URL.createObjectURL(await paket());
     const link = Object.assign(document.createElement('a'), { href: url, download: 'ceyx_aufnahmen.zip' });
     document.body.append(link); link.click(); link.remove();
   };
+  // Direkt teilen (z. B. WhatsApp), wo das Handy es kann
+  const probe = new File([new Blob(['x'])], 'p.zip', { type: 'application/zip' });
+  if (navigator.canShare && navigator.canShare({ files: [probe] })) {
+    $('#teilen').hidden = false;
+    $('#teilen').onclick = async () => {
+      const datei = new File([await paket()], 'ceyx_aufnahmen.zip', { type: 'application/zip' });
+      try { await navigator.share({ files: [datei], title: 'Ceyx & Alcyone – Aufnahmen' }); }
+      catch (e) { if (e.name !== 'AbortError') fehler('Senden ging nicht – bitte „Herunterladen“ nehmen.'); }
+    };
+  }
 
-  if (!navigator.mediaDevices || !window.MediaRecorder) fehler('Dieser Browser kann leider nicht aufnehmen – bitte Chrome oder Safari nehmen.');
+  // Am PC: Leertaste startet/stoppt die Aufnahme des nächsten offenen Satzes
+  window.addEventListener('keydown', (e) => {
+    if (e.code !== 'Space' || document.getElementById('gate') || /INPUT|BUTTON/.test(e.target.tagName)) return;
+    e.preventDefault();
+    if (laufend) { stopp(); return; }
+    const s = SAETZE.find((x) => !aufnahmen[x.id]);
+    if (s) { karte(s.id).scrollIntoView({ behavior: 'smooth', block: 'center' }); start(s.id); }
+  });
+
+  if (!navigator.mediaDevices || !window.MediaRecorder) fehler('Dieser Browser kann leider nicht aufnehmen – bitte Chrome oder Safari nehmen.', true);
   zeigen();
 </script>
 </body>
