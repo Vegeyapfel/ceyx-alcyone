@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ceyx &amp; Alcyone – Aufnahme</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#05070a">
+<style>
+  :root { --grund: #07090b; --karte: #0e1115; --linie: #2a2924; --text: #e8e2d4; --leise: #8f897d; --gold: #d9b877; --rot: #c96b5b; --gruen: #8fb38a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--grund); color: var(--text); font-family: 'Cormorant Garamond', Georgia, serif; }
+  body { padding: max(20px, env(safe-area-inset-top)) 16px 120px; }
+  main { max-width: 720px; margin: 0 auto; }
+  h1 { font-weight: 400; font-size: clamp(30px, 7vw, 46px); letter-spacing: .04em; margin: 8px 0 4px; text-align: center; }
+  h1 span { color: var(--gold); font-style: italic; }
+  .unter { text-align: center; color: var(--leise); margin: 0 0 22px; font-size: 18px; }
+  .tipps { border: 1px solid var(--linie); padding: 14px 16px; margin-bottom: 22px; font-size: 17px; line-height: 1.5; color: #cfc8b8; }
+  .tipps b { color: var(--gold); font-weight: 600; }
+  .karte { background: var(--karte); border: 1px solid var(--linie); padding: 16px; margin-bottom: 14px; transition: border-color .3s; }
+  .karte.fertig { border-color: #4f5d48; }
+  .karte.laeuft { border-color: var(--rot); }
+  .kopf { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 8px;
+    font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--leise); font-family: system-ui, sans-serif; }
+  .kopf .ok { color: var(--gruen); letter-spacing: .05em; text-transform: none; font-size: 14px; }
+  .text { font-size: clamp(21px, 5vw, 26px); line-height: 1.4; margin: 0 0 14px; }
+  .knoepfe { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  button { font-family: system-ui, sans-serif; font-size: 16px; padding: 12px 18px; min-height: 46px; border-radius: 4px;
+    border: 1px solid #6b6455; background: transparent; color: var(--text); cursor: pointer; }
+  button:disabled { opacity: .35; cursor: default; }
+  .auf { border-color: var(--rot); color: #f0c4bb; }
+  .karte.laeuft .auf { background: var(--rot); color: #fff; }
+  .zeit { font-family: system-ui, sans-serif; font-size: 14px; color: var(--leise); min-width: 44px; }
+  .pegel { height: 4px; background: #1c1f24; margin-top: 12px; overflow: hidden; }
+  .pegel i { display: block; height: 100%; width: 0; background: var(--rot); transition: width .08s; }
+  .leiste { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+    background: rgba(7, 9, 11, .96); border-top: 1px solid var(--linie); display: flex; justify-content: center; gap: 14px; align-items: center; }
+  .leiste .stand { font-family: system-ui, sans-serif; color: var(--leise); font-size: 15px; }
+  .leiste button { border-color: var(--gold); color: var(--gold); }
+  .fehler { color: var(--rot); font-family: system-ui, sans-serif; font-size: 15px; text-align: center; min-height: 20px; }
+  #gate { position: fixed; inset: 0; z-index: 99; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; background: var(--grund); text-align: center; padding: 16px; }
+  #gate h2 { font-size: clamp(28px, 7vw, 46px); font-weight: 400; letter-spacing: .08em; margin: 0; }
+  #gate p { opacity: .6; margin: 0; }
+  #gate form { display: flex; gap: 10px; }
+  #gate input { width: 170px; padding: 12px; background: transparent; border: 1px solid #6b6455; color: var(--text);
+    font-size: 22px; letter-spacing: .4em; text-align: center; border-radius: 2px; }
+</style>
+</head>
+<body>
+<div id="gate">
+  <h2>Ceyx &amp; Alcyone</h2>
+  <p>Aufnahme – Zugang nur mit Kennwort</p>
+  <form id="gateform">
+    <input id="gatepw" type="password" inputmode="numeric" maxlength="6" autocomplete="off" aria-label="Kennwort">
+    <button type="submit">Öffnen</button>
+  </form>
+  <div class="fehler" id="gateerr"></div>
+</div>
+<script>
+  (function () {
+    const gate = document.getElementById('gate');
+    try { if (localStorage.getItem('ceyx_ok') === '1') { gate.remove(); return; } } catch (e) {}
+    const pw = document.getElementById('gatepw');
+    document.getElementById('gateform').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (pw.value.trim() === '559748') { try { localStorage.setItem('ceyx_ok', '1'); } catch (e) {} gate.remove(); }
+      else { document.getElementById('gateerr').textContent = 'Falsches Kennwort'; pw.value = ''; }
+    });
+  })();
+</script>
+
+<main>
+  <h1>Ceyx <span>&amp;</span> Alcyone</h1>
+  <p class="unter">Erzählerstimme aufnehmen</p>
+  <div class="tipps">
+    <b>So geht's:</b> Ruhiger Raum, Handy etwa eine Handbreit vom Mund. Auf <b>Aufnehmen</b> tippen, kurz warten, Satz ruhig sprechen,
+    dann <b>Stopp</b>. Mit <b>Anhören</b> prüfen – passt es nicht, einfach neu aufnehmen. Die Aufnahmen bleiben auf diesem Gerät gespeichert,
+    auch wenn du die Seite schließt. Zum Schluss unten auf <b>Alle herunterladen</b> tippen und die Datei an Julian schicken.
+  </div>
+  <p class="fehler" id="fehler"></p>
+  <div id="liste"></div>
+</main>
+
+<div class="leiste">
+  <span class="stand" id="stand"></span>
+  <button id="laden" type="button">Alle herunterladen</button>
+</div>
+
+<script type="module">
+  import { SAETZE } from './sprecher.js';
+  const $ = (s, el = document) => el.querySelector(s);
+
+  // ---------- Speicher auf dem Gerät (IndexedDB) ----------
+  const db = await new Promise((ok, nein) => {
+    const r = indexedDB.open('ceyx_aufnahmen', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('a');
+    r.onsuccess = () => ok(r.result); r.onerror = () => nein(r.error);
+  }).catch(() => null);
+  const speicher = {
+    async hol(id) { if (!db) return null; return new Promise((ok) => { const q = db.transaction('a').objectStore('a').get(id); q.onsuccess = () => ok(q.result || null); q.onerror = () => ok(null); }); },
+    async setz(id, wert) { if (!db) return; return new Promise((ok) => { const t = db.transaction('a', 'readwrite'); t.objectStore('a').put(wert, id); t.oncomplete = ok; t.onerror = ok; }); },
+  };
+  const aufnahmen = {};   // id → { blob, typ, dauer }
+  for (const s of SAETZE) { const w = await speicher.hol(s.id); if (w) aufnahmen[s.id] = w; }
+
+  // ---------- Karten ----------
+  const liste = $('#liste');
+  SAETZE.forEach((s, i) => {
+    const k = document.createElement('section');
+    k.className = 'karte';
+    k.dataset.id = s.id;
+    k.innerHTML = `
+      <div class="kopf"><span>${i + 1} · ${s.titel}</span><span class="ok"></span></div>
+      <p class="text"></p>
+      <div class="knoepfe">
+        <button class="auf" type="button">Aufnehmen</button>
+        <button class="hoer" type="button">Anhören</button>
+        <span class="zeit"></span>
+      </div>
+      <div class="pegel"><i></i></div>`;
+    $('.text', k).textContent = s.text;
+    $('.auf', k).onclick = () => (laufend && laufend.id === s.id ? stopp() : start(s.id));
+    $('.hoer', k).onclick = () => anhoeren(s.id);
+    liste.append(k);
+  });
+  const karte = (id) => liste.querySelector(`[data-id="${id}"]`);
+
+  function zeigen() {
+    let n = 0;
+    for (const s of SAETZE) {
+      const k = karte(s.id), a = aufnahmen[s.id];
+      k.classList.toggle('fertig', !!a);
+      $('.ok', k).textContent = a ? `✓ aufgenommen (${a.dauer.toFixed(1)} s)` : '';
+      $('.hoer', k).disabled = !a || !!laufend;
+      $('.auf', k).textContent = laufend && laufend.id === s.id ? 'Stopp' : a ? 'Neu aufnehmen' : 'Aufnehmen';
+      $('.auf', k).disabled = !!laufend && laufend.id !== s.id;
+      if (a) n++;
+    }
+    $('#stand').textContent = `${n} von ${SAETZE.length} aufgenommen`;
+    $('#laden').disabled = n === 0 || !!laufend;
+  }
+
+  // ---------- Aufnehmen ----------
+  let strom = null, laufend = null, spieler = null;
+  const fehler = (t) => { $('#fehler').textContent = t; };
+
+  async function start(id) {
+    fehler('');
+    if (spieler) { spieler.pause(); spieler = null; }
+    try {
+      strom = strom || await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true } });
+    } catch {
+      fehler('Kein Zugriff aufs Mikrofon. Bitte im Browser erlauben und die Seite neu laden.');
+      return;
+    }
+    const typ = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm', 'audio/ogg'].find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
+    const rec = new MediaRecorder(strom, typ ? { mimeType: typ } : undefined);
+    const teile = [];
+    rec.ondataavailable = (e) => { if (e.data.size) teile.push(e.data); };
+    const t0 = performance.now();
+    laufend = { id, rec, t0 };
+    // Pegelanzeige
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const an = ac.createAnalyser(); an.fftSize = 512;
+    ac.createMediaStreamSource(strom).connect(an);
+    const puffer = new Uint8Array(an.fftSize);
+    const k = karte(id);
+    k.classList.add('laeuft');
+    const takt = () => {
+      if (!laufend || laufend.id !== id) return;
+      an.getByteTimeDomainData(puffer);
+      let max = 0; for (const v of puffer) max = Math.max(max, Math.abs(v - 128));
+      $('.pegel i', k).style.width = `${Math.min(100, (max / 128) * 180)}%`;
+      $('.zeit', k).textContent = `${((performance.now() - t0) / 1000).toFixed(1)} s`;
+      requestAnimationFrame(takt);
+    };
+    rec.onstop = async () => {
+      ac.close();
+      const dauer = (performance.now() - t0) / 1000;
+      const blob = new Blob(teile, { type: rec.mimeType || typ || 'audio/webm' });
+      laufend = null;
+      k.classList.remove('laeuft');
+      $('.pegel i', k).style.width = '0';
+      $('.zeit', k).textContent = '';
+      if (dauer < 0.8 || !blob.size) { fehler('Die Aufnahme war zu kurz – bitte nochmal.'); zeigen(); return; }
+      aufnahmen[id] = { blob, typ: blob.type, dauer };
+      await speicher.setz(id, aufnahmen[id]);
+      zeigen();
+    };
+    rec.start();
+    zeigen();
+    takt();
+  }
+  function stopp() { if (laufend) laufend.rec.stop(); }
+
+  function anhoeren(id) {
+    const a = aufnahmen[id];
+    if (!a) return;
+    if (spieler) spieler.pause();
+    spieler = new Audio(URL.createObjectURL(a.blob));
+    spieler.play().catch(() => fehler('Abspielen nicht möglich.'));
+  }
+
+  // ---------- Alle als ZIP herunterladen (ohne Kompression, ohne Zusatzbibliothek) ----------
+  const crcTab = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+  const crc32 = (b) => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = crcTab[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  async function zip(dateien) {
+    const teile = [], zentral = []; let pos = 0;
+    for (const { name, daten } of dateien) {
+      const n = new TextEncoder().encode(name), crc = crc32(daten);
+      const k = new DataView(new ArrayBuffer(30));
+      k.setUint32(0, 0x04034b50, true); k.setUint16(4, 20, true); k.setUint32(14, crc, true);
+      k.setUint32(18, daten.length, true); k.setUint32(22, daten.length, true); k.setUint16(26, n.length, true);
+      teile.push(k, n, daten);
+      const z = new DataView(new ArrayBuffer(46));
+      z.setUint32(0, 0x02014b50, true); z.setUint16(4, 20, true); z.setUint16(6, 20, true); z.setUint32(16, crc, true);
+      z.setUint32(20, daten.length, true); z.setUint32(24, daten.length, true); z.setUint16(28, n.length, true); z.setUint32(42, pos, true);
+      zentral.push(z, n);
+      pos += 30 + n.length + daten.length;
+    }
+    const groesse = zentral.reduce((s, x) => s + x.byteLength, 0);
+    const e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, dateien.length, true); e.setUint16(10, dateien.length, true);
+    e.setUint32(12, groesse, true); e.setUint32(16, pos, true);
+    return new Blob([...teile, ...zentral, e], { type: 'application/zip' });
+  }
+  $('#laden').onclick = async () => {
+    const dateien = [];
+    for (const s of SAETZE) {
+      const a = aufnahmen[s.id]; if (!a) continue;
+      const endung = a.typ.includes('mp4') ? 'm4a' : a.typ.includes('ogg') ? 'ogg' : 'webm';
+      dateien.push({ name: `${s.id}.${endung}`, daten: new Uint8Array(await a.blob.arrayBuffer()) });
+    }
+    const url = URL.createObjectURL(await zip(dateien));
+    const link = Object.assign(document.createElement('a'), { href: url, download: 'ceyx_aufnahmen.zip' });
+    document.body.append(link); link.click(); link.remove();
+  };
+
+  if (!navigator.mediaDevices || !window.MediaRecorder) fehler('Dieser Browser kann leider nicht aufnehmen – bitte Chrome oder Safari nehmen.');
+  zeigen();
+</script>
+</body>
+</html>
